@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
+    <style>
+        *{
+            font-family: 'Poppins';
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="h-screen p-4 flex flex-col">
