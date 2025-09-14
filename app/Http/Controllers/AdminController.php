@@ -10,4 +10,16 @@ class AdminController extends Controller
     {
         return view('admin.layout');
     }
+    public function inventory()
+    {
+        return view('admin.inventory');
+    }
+    public function addProduct()
+    {
+        return view('admin.add-product');
+    }
+    public function addProductType()
+    {
+        return view('admin.add-product-type');
+    }
 }

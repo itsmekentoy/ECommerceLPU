@@ -1,90 +1,90 @@
 @include('admin.includes.header')
 @include('admin.includes.sidebar')
-            <!-- Main Content -->
-<div class="flex-1 bg-white rounded-lg shadow-sm flex flex-col min-h-0">
-    <!-- Header Row -->
-    <div class="flex items-center justify-between p-4 border-b border-gray-200">
-        <div class="flex items-center gap-16">
-            <span class="text-gray-700 font-medium">Product</span>
-            <span class="text-gray-700 font-medium">Stocks</span>
-            <span class="text-gray-700 font-medium">Price</span>
-        </div>
-        <button class="bg-orange-700 text-white px-3 py-1.5 rounded text-sm hover:bg-orange-800 transition-colors">
-            Add Product
-        </button>
+<!-- Main Content: Record of Type of Product -->
+<div class="flex-1 bg-white rounded-lg shadow-sm flex flex-col min-h-0 p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Product Types</h2>
+        <a href="{{ route('admin.addProductType') }}" class="bg-orange-700 text-white px-4 py-2 rounded text-sm hover:bg-orange-800 transition-colors">
+            Add Type
+        </a>
     </div>
-    <!-- Product List -->
-    <div class="flex-1 overflow-y-auto divide-y divide-gray-200">
-        <!-- Product 1: Bag -->
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-            <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-orange-600 rounded border-gray-300">
-                <span class="text-gray-800 w-20">Bag</span>
-            </div>
-            <div class="flex items-center gap-16">
-                <span class="text-gray-800 w-16 text-center">54</span>
-                <span class="text-gray-800 w-20 text-center">₱350.00</span>
-            </div>
-            <button class="text-gray-400 hover:text-red-500 transition-colors p-1">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-        <!-- Product 2: Wallet (Out of Stock) -->
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-2 border-purple-300 bg-purple-50">
-            <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-orange-600 rounded border-gray-300">
-                <span class="text-gray-800 w-20">Wallet</span>
-            </div>
-            <div class="flex items-center gap-16">
-                <span class="text-red-500 w-16 text-center font-medium text-sm">Out of Stock</span>
-                <span class="text-gray-800 w-20 text-center">₱120.00</span>
-            </div>
-            <button class="text-gray-400 hover:text-red-500 transition-colors p-1">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-        <!-- Product 3: Facemask -->
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-            <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-orange-600 rounded border-gray-300">
-                <span class="text-gray-800 w-20">Facemask</span>
-            </div>
-            <div class="flex items-center gap-16">
-                <span class="text-gray-800 w-16 text-center">27</span>
-                <span class="text-gray-800 w-20 text-center">₱75.00</span>
-            </div>
-            <button class="text-gray-400 hover:text-red-500 transition-colors p-1">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-        <!-- Product 4: Blanket -->
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-            <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-orange-600 rounded border-gray-300">
-                <span class="text-gray-800 w-20">Blanket</span>
-            </div>
-            <div class="flex items-center gap-16">
-                <span class="text-gray-800 w-16 text-center">36</span>
-                <span class="text-gray-800 w-20 text-center">₱650.00</span>
-            </div>
-            <button class="text-gray-400 hover:text-red-500 transition-colors p-1">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
-        <!-- Product 5: Textiles -->
-        <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
-            <div class="flex items-center gap-3">
-                <input type="checkbox" class="w-4 h-4 text-orange-600 rounded border-gray-300">
-                <span class="text-gray-800 w-20">Textiles</span>
-            </div>
-            <div class="flex items-center gap-16">
-                <span class="text-gray-800 w-16 text-center">120</span>
-                <span class="text-gray-800 w-20 text-center">₱750.00</span>
-            </div>
-            <button class="text-gray-400 hover:text-red-500 transition-colors p-1">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Example Type 1 -->
+                <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-800">Bag</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">All kinds of bags</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                </tr>
+                <!-- Example Type 2 -->
+                <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-800">Wallet</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">Leather and fabric wallets</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                </tr>
+                <!-- Example Type 3 -->
+                <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-800">Facemask</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">Protective face masks</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                </tr>
+                <!-- Example Type 4 -->
+                <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-800">Blanket</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">Various blankets</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                </tr>
+                <!-- Example Type 5 -->
+                <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-800">Textiles</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">Textile products</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 @include('admin.includes.footer')

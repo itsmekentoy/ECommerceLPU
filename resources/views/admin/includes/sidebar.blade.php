@@ -1,10 +1,10 @@
 <div class="w-40 bg-orange-700 rounded-lg p-3 h-full flex flex-col">
     <nav class="space-y-3 flex-1">
-        <a href="#" class="flex items-center gap-2 text-white p-2 rounded bg-orange-800 bg-opacity-50 text-sm">
+        <a href="{{ route('admin.index') }}" class="flex items-center gap-2 text-white p-2 rounded bg-orange-800 bg-opacity-50 text-sm">
             <i class="fas fa-tags"></i>
             <span class="font-medium">Product Type</span>
         </a>
-        <a href="#" class="flex items-center gap-2 text-white p-2 rounded hover:bg-orange-800 hover:bg-opacity-30 transition-colors text-sm">
+        <a href="{{ route('admin.inventory') }}" class="flex items-center gap-2 text-white p-2 rounded hover:bg-orange-800 hover:bg-opacity-30 transition-colors text-sm">
             <i class="fas fa-boxes"></i>
             <span class="font-medium">Inventory</span>
         </a>
