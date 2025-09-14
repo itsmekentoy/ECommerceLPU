@@ -3,7 +3,7 @@
 <!-- Main Content: Inventory Table -->
 <div class="flex-1 bg-white rounded-lg shadow-sm flex flex-col min-h-0 p-6">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Inventory</h2>
+        <h2 class="text-2xl font-bold text-gray-800">Inventory Data</h2>
         <a href="{{ route('admin.addProduct') }}" class="bg-orange-700 text-white px-4 py-2 rounded text-sm hover:bg-orange-800 transition-colors flex items-center gap-2">
             <i class="fas fa-plus"></i>
             Add Product
