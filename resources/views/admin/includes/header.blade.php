@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HabingIbaan - Inventory Management</title>
+    <title>HabingIbaan - Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'rgb(194, 65, 12)',
+                        'primary-dark': 'rgb(154, 52, 10)',
+                        'primary-light': 'rgb(234, 88, 12)'
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
     <style>
@@ -14,13 +26,4 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="h-screen p-4 flex flex-col">
-        <!-- Header -->
-        <div class="mb-4">
-            <h1 class="text-xl font-normal text-gray-800">
-                Habing<span class="text-orange-600">Ibaan</span>
-            </h1>
-        </div>
-
-        <div class="flex gap-4 flex-1 min-h-0">
+<body class="bg-gray-50">
