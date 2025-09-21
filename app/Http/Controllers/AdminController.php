@@ -11,10 +11,7 @@ class AdminController extends Controller
         return view('admin.layout');
     }
 
-    public function inventory()
-    {
-        return view('admin.product');
-    }
+    
     public function users()
     {
         return view('admin.users');

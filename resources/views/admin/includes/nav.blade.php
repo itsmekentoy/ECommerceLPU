@@ -5,7 +5,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0 flex items-center">
                     <h1 class="text-2xl">
-                        <span class="text-black">Habing</span><span class="text-primary">Ibaan</span>
+                        <span class="text-black">Habing</span><span class="text-primary-dark">Ibaan</span>
                     </h1>
                 </div>
             </div>

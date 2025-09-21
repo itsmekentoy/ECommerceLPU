@@ -9,9 +9,7 @@
                 <h1 class="text-3xl font-bold text-gray-900">Users</h1>
                 <p class="text-gray-600 mt-2">Manage user accounts and communications.</p>
             </div>
-            <button onclick="openAddModal()" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                Add New User
-            </button>
+            
         </div>
 
         <!-- Users Table -->
@@ -51,22 +49,16 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-3">
                                     <!-- Conversation Button with Badge -->
-                                    <button onclick="openConversationModal(1)" class="relative text-blue-600 hover:text-blue-800 transition-colors">
+                                    <button onclick="openConversationModal(1)" class="relative text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                         </svg>
                                         <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">1</span>
                                     </button>
-                                    <!-- Edit Button -->
-                                    <button onclick="openUpdateModal(1)" class="text-primary hover:text-primary/80 transition-colors">
+                                    <!-- Update Status Button -->
+                                    <button onclick="openStatusModal(1)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Delete Button -->
-                                    <button onclick="openDeleteModal(1)" class="text-red-600 hover:text-red-800 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </button>
                                 </div>
@@ -91,21 +83,15 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-3">
                                     <!-- Conversation Button without Badge -->
-                                    <button onclick="openConversationModal(2)" class="text-blue-600 hover:text-blue-800 transition-colors">
+                                    <button onclick="openConversationModal(2)" class="text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                         </svg>
                                     </button>
-                                    <!-- Edit Button -->
-                                    <button onclick="openUpdateModal(2)" class="text-primary hover:text-primary/80 transition-colors">
+                                    <!-- Update Status Button -->
+                                    <button onclick="openStatusModal(2)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Delete Button -->
-                                    <button onclick="openDeleteModal(2)" class="text-red-600 hover:text-red-800 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </button>
                                 </div>
@@ -130,22 +116,16 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-3">
                                     <!-- Conversation Button with Badge -->
-                                    <button onclick="openConversationModal(3)" class="relative text-blue-600 hover:text-blue-800 transition-colors">
+                                    <button onclick="openConversationModal(3)" class="relative text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                         </svg>
                                         <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">1</span>
                                     </button>
-                                    <!-- Edit Button -->
-                                    <button onclick="openUpdateModal(3)" class="text-primary hover:text-primary/80 transition-colors">
+                                    <!-- Update Status Button -->
+                                    <button onclick="openStatusModal(3)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Delete Button -->
-                                    <button onclick="openDeleteModal(3)" class="text-red-600 hover:text-red-800 transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </button>
                                 </div>
@@ -158,33 +138,30 @@
     </div>
 </div>
 
-<!-- Add/Update User Modal -->
-<div id="userModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+
+<!-- Update Status Modal -->
+<div id="statusModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Add New User</h3>
+            <h3 class="text-lg font-semibold text-gray-900">Update User Status</h3>
         </div>
         <form class="px-6 py-4 space-y-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input type="text" id="userName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter full name">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select id="userStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <option value="active">Active</option>
+                    <option value="banned">Banned</option>
+                    <option value="suspended">Suspended</option>
+                </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input type="email" id="userEmail" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter email address">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
-                <input type="tel" id="userContact" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter contact number">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <textarea id="userAddress" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter complete address"></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+                <textarea id="userRemarks" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter remarks (optional)"></textarea>
             </div>
         </form>
         <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-            <button onclick="closeUserModal()" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">Cancel</button>
-            <button onclick="saveUser()" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">Save User</button>
+            <button onclick="closeStatusModal()" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">Cancel</button>
+            <button onclick="saveStatus()" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">Save Status</button>
         </div>
     </div>
 </div>
@@ -245,56 +222,38 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-        <div class="px-6 py-4">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-lg font-semibold text-gray-900">Delete User</h3>
-                    <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete this user? This action cannot be undone.</p>
-                </div>
-            </div>
-        </div>
-        <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-            <button onclick="closeDeleteModal()" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">Cancel</button>
-            <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors">Delete</button>
-        </div>
-    </div>
-</div>
+
 
 <script>
 let currentUserId = null;
 let isEditMode = false;
 
-function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Add New User';
-    document.getElementById('userModal').classList.remove('hidden');
-    document.getElementById('userModal').classList.add('flex');
-    isEditMode = false;
-    clearForm();
-}
 
-function openUpdateModal(userId) {
-    document.getElementById('modalTitle').textContent = 'Update User';
-    document.getElementById('userModal').classList.remove('hidden');
-    document.getElementById('userModal').classList.add('flex');
+function openStatusModal(userId) {
     currentUserId = userId;
-    isEditMode = true;
-    
-    // Here you would typically load the user data
-    // For demo purposes, we'll just show the modal
+    document.getElementById('statusModal').classList.remove('hidden');
+    document.getElementById('statusModal').classList.add('flex');
+    // Optionally, load current status/remarks for userId here
 }
 
-function closeUserModal() {
-    document.getElementById('userModal').classList.add('hidden');
-    document.getElementById('userModal').classList.remove('flex');
-    clearForm();
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
+    document.getElementById('statusModal').classList.remove('flex');
+    clearStatusForm();
+}
+
+function clearStatusForm() {
+    document.getElementById('userStatus').value = 'active';
+    document.getElementById('userRemarks').value = '';
+}
+
+function saveStatus() {
+    // Here you would typically send the status/remarks to your backend
+    const status = document.getElementById('userStatus').value;
+    const remarks = document.getElementById('userRemarks').value;
+    console.log('Saving status for user ID:', currentUserId, status, remarks);
+    closeStatusModal();
+    alert('User status updated!');
 }
 
 function openConversationModal(userId) {
@@ -366,11 +325,7 @@ function clearForm() {
 }
 
 // Close modals when clicking outside
-document.getElementById('userModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeUserModal();
-    }
-});
+
 
 document.getElementById('conversationModal').addEventListener('click', function(e) {
     if (e.target === this) {
@@ -378,11 +333,7 @@ document.getElementById('conversationModal').addEventListener('click', function(
     }
 });
 
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeDeleteModal();
-    }
-});
+
 
 document.getElementById('newMessage').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {

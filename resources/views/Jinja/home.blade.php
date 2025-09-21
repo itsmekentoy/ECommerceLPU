@@ -6,27 +6,27 @@
         <div class="carousel-container">
             <div class="carousel-slides" id="carouselSlides">
                 <div class="slide active">
-                    <img src="/placeholder.svg?height=500&width=1200" alt="Local Products">
+                    <img src="{{ asset('imgs/image1.jpg') }}" alt="Local Products">
                     <div class="slide-content">
                         <h1>Welcome to HabingIbaan</h1>
                         <p>Discover authentic local products and crafts from Ibaan</p>
-                        <a href="shops.html" class="cta-btn">Shop Now</a>
+                        <a href="{{ route('shop') }}" class="cta-btn">Shop Now</a>
                     </div>
                 </div>
                 <div class="slide">
-                    <img src="/placeholder.svg?height=500&width=1200" alt="Handicrafts">
+                    <img src="{{ asset('imgs/image2.jpg') }}" alt="Handicrafts">
                     <div class="slide-content">
                         <h1>Handcrafted Excellence</h1>
                         <p>Support local artisans and their beautiful creations</p>
-                        <a href="shops.html" class="cta-btn">Explore Collection</a>
+                        <a href="{{ route('shop') }}" class="cta-btn">Explore Collection</a>
                     </div>
                 </div>
                 <div class="slide">
-                    <img src="/placeholder.svg?height=500&width=1200" alt="Fresh Products">
+                    <img src="{{ asset('imgs/image3.jpg') }}" alt="Fresh Products">
                     <div class="slide-content">
                         <h1>Fresh & Local</h1>
-                        <p>Farm-fresh products delivered to your doorstep</p>
-                        <a href="shops.html" class="cta-btn">Order Fresh</a>
+                        <p>Fresh products delivered to your doorstep</p>
+                        <a href="{{ route('shop') }}" class="cta-btn">Order Fresh</a>
                     </div>
                 </div>
             </div>
