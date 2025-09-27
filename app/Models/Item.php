@@ -12,7 +12,8 @@ class Item extends Model
         'description',
         'stock',
         'price',
-        'file_path'
+        'file_path',
+        'is_featured',
     ];
 
     // Each Item belongs to one ItemType

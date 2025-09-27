@@ -1,180 +1,136 @@
 @include('jinja.includes.header')
 @include('jinja.includes.nav')
+
 <main class="main-content">
     <!-- Shop Header -->
-    <section class="shop-header">
-        <div class="container">
-            <h1>Our Products</h1>
-            <p>Discover authentic local products crafted by skilled artisans</p>
+    <section class="shop-header py-6 bg-gray-100">
+        <div class="container mx-auto text-center">
+            <h1 class="text-2xl font-bold">Our Products</h1>
+            <p class="text-gray-600">Discover authentic local products crafted by skilled artisans</p>
         </div>
     </section>
+
     <!-- Product Tabs -->
-    <section class="shop-section">
-        <div class="container">
-            <div class="shop-tabs">
-                <button class="tab-btn active" onclick="showTab('all')">All Products</button>
-                <button class="tab-btn" onclick="showTab('handicrafts')">Handicrafts</button>
-                <button class="tab-btn" onclick="showTab('food')">Food & Beverages</button>
-                <button class="tab-btn" onclick="showTab('textiles')">Textiles</button>
-                <button class="tab-btn" onclick="showTab('pottery')">Pottery</button>
-                <button class="tab-btn custom-tab" onclick="showCustomizeModal()">
+    <section class="shop-section py-8">
+        <div class="container mx-auto">
+            <!-- Tabs -->
+            <div class="shop-tabs flex flex-wrap gap-2 mb-6">
+                <button class="tab-btn active px-4 py-2 bg-blue-500 text-white rounded"
+                        onclick="showTab(event, 'all')">
+                    All
+                </button>
+                @foreach ($itemTypes as $itemType)
+                    <button class="tab-btn px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                            onclick="showTab(event, '{{ $itemType->id }}')">
+                        {{ $itemType->type_name }}
+                    </button>
+                @endforeach
+                <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                        onclick="showCustomizeModal()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                     </svg>
                     Add Customize Product
                 </button>
             </div>
-            <!-- All Products Tab -->
-            <div class="tab-content active" id="all">
-                <div class="products-grid">
-                    <div class="product-card" data-category="handicrafts">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Woven Basket">
-                        <div class="product-info">
-                            <h3>Traditional Woven Basket</h3>
-                            <p class="product-category">Handicrafts</p>
-                            <p class="product-price">₱450.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 1, name: 'Traditional Woven Basket', price: 450, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
+
+            <!-- Products Grid -->
+            <div class="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+                @foreach ($items as $itemType)
+                    @foreach ($itemType->items as $item)
+                        <div class="product-card border rounded-lg p-4 shadow-sm hover:shadow-md"
+                             data-category="{{ $itemType->id }}">
+                            <!-- Product Image -->
+                            <img src="{{ asset('storage/products/' . $item->file_path) }}"
+                                 alt="{{ $item->item_name }}"
+                                 class="w-full h-48 object-cover rounded">
+
+                            <!-- Product Info -->
+                            <div class="product-info mt-3">
+                                <h3 class="font-semibold text-lg">{{ $item->item_name }}</h3>
+                                <p class="product-category text-sm text-gray-500">{{ $itemType->type_name }}</p>
+                                <p class="product-price font-bold text-blue-600">₱{{ number_format($item->price, 2) }}</p>
+
+                                <!-- Add to Cart Button -->
+                                <button 
+                                class="add-to-cart-btn mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                @if ($item->stock <= 0)
+                                    disabled style='background-color: gray; cursor: not-allowed;'
+                                    
+                                @endif
+                                    onclick="addToCart({
+                                        id: {{ $item->id }},
+                                        name: '{{ $item->name }}',
+                                        price: {{ $item->price }},
+                                        image: '{{ asset('storage/products/' . $item->file_path) }}'
+                                    })">
+                                    @if ($item->stock > 0)
+                                        Add to Cart
+                                    @else
+                                        Out of Stock
+                                    @endif
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="product-card" data-category="pottery">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Handmade Pottery">
-                        <div class="product-info">
-                            <h3>Handmade Pottery Set</h3>
-                            <p class="product-category">Pottery</p>
-                            <p class="product-price">₱680.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 2, name: 'Handmade Pottery Set', price: 680, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="food">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Organic Honey">
-                        <div class="product-info">
-                            <h3>Pure Organic Honey</h3>
-                            <p class="product-category">Food & Beverages</p>
-                            <p class="product-price">₱320.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 3, name: 'Pure Organic Honey', price: 320, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="textiles">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Traditional Textile">
-                        <div class="product-info">
-                            <h3>Traditional Textile</h3>
-                            <p class="product-category">Textiles</p>
-                            <p class="product-price">₱890.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 4, name: 'Traditional Textile', price: 890, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="handicrafts">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Wooden Craft">
-                        <div class="product-info">
-                            <h3>Handcrafted Wood Art</h3>
-                            <p class="product-category">Handicrafts</p>
-                            <p class="product-price">₱1,250.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 5, name: 'Handcrafted Wood Art', price: 1250, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="food">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Coffee Beans">
-                        <div class="product-info">
-                            <h3>Premium Coffee Beans</h3>
-                            <p class="product-category">Food & Beverages</p>
-                            <p class="product-price">₱540.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 6, name: 'Premium Coffee Beans', price: 540, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="textiles">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Embroidered Bag">
-                        <div class="product-info">
-                            <h3>Embroidered Handbag</h3>
-                            <p class="product-category">Textiles</p>
-                            <p class="product-price">₱750.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 7, name: 'Embroidered Handbag', price: 750, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="pottery">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Ceramic Vase">
-                        <div class="product-info">
-                            <h3>Decorative Ceramic Vase</h3>
-                            <p class="product-category">Pottery</p>
-                            <p class="product-price">₱420.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 8, name: 'Decorative Ceramic Vase', price: 420, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                    <div class="product-card" data-category="food">
-                        <img src="/placeholder.svg?height=250&width=250" alt="Dried Fruits">
-                        <div class="product-info">
-                            <h3>Mixed Dried Fruits</h3>
-                            <p class="product-category">Food & Beverages</p>
-                            <p class="product-price">₱280.00</p>
-                            <button class="add-to-cart-btn" onclick="addToCart({id: 9, name: 'Mixed Dried Fruits', price: 280, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                @endforeach
             </div>
-            <!-- Individual Category Tabs (Hidden by default) -->
-            <div class="tab-content" id="handicrafts"></div>
-            <div class="tab-content" id="food"></div>
-            <div class="tab-content" id="textiles"></div>
-            <div class="tab-content" id="pottery"></div>
         </div>
     </section>
 </main>
+
 <script>
-        // Tab functionality
-        function showTab(category) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    // Tab functionality
+    function showTab(event, category) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
 
-            // Show/hide products based on category
-            const products = document.querySelectorAll('.product-card');
-            products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        // Customize modal functionality
-        function showCustomizeModal() {
-            document.getElementById('customizeModal').style.display = 'flex';
-        }
-
-        function closeCustomizeModal() {
-            document.getElementById('customizeModal').style.display = 'none';
-            document.getElementById('customizeForm').reset();
-        }
-
-        // Handle customize form submission
-        document.getElementById('customizeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const customProduct = {
-                name: formData.get('productName'),
-                category: formData.get('productCategory'),
-                price: parseFloat(formData.get('productPrice')),
-                description: formData.get('productDescription'),
-                customizations: formData.get('customizations')
-            };
-            
-            // Here you would typically send this to your backend
-            alert('Custom product request submitted successfully! We will contact you soon.');
-            closeCustomizeModal();
+        // Show/hide products
+        document.querySelectorAll('.product-card').forEach(product => {
+            if (category === 'all' || product.dataset.category === category) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
         });
+    }
 
-        // Active navigation highlighting
-      
+    // Simple Add to Cart
+    function addToCart(product) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.push(product);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+        alert(product.name + " added to cart!");
+    }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            setActiveNav();
-            updateCartBadge();
-        });
-    </script>
+    // Update Cart Badge (if you have a cart icon)
+    function updateCartBadge() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let badge = document.getElementById('cart-badge');
+        if (badge) {
+            badge.textContent = cart.length;
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+    });
+
+    // Customize modal functionality (placeholder functions)
+    function showCustomizeModal() {
+        const modal = document.getElementById('customizeModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeCustomizeModal() {
+        const modal = document.getElementById('customizeModal');
+        if (modal) modal.style.display = 'none';
+    }
+</script>
+
 @include('jinja.includes.cart')
 @include('jinja.includes.footer')
 @include('jinja.includes.scripts')

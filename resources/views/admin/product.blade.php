@@ -17,10 +17,10 @@
         <!-- Products Table -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Product List</h2>
+               
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full" id="productsTable">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
@@ -64,7 +64,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₱ {{$item->price}}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <button onclick="openUpdateModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', '{{ addslashes($item->description) }}', {{$item->stock}}, {{$item->price}}, {{$item->item_type_id}}, '{{ addslashes($item->file_path ?? '') }}')" class="text-primary hover:text-primary/80 transition-colors">
+                                    <button onclick="openUpdateModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', '{{ addslashes($item->description) }}', {{$item->stock}}, {{$item->price}}, {{$item->item_type_id}}, '{{ addslashes($item->file_path ?? '') }}', {{$item->is_featured}})" class="text-primary hover:text-primary/80 transition-colors">
                                         <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
@@ -148,7 +148,14 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Price (₱)</label>
                 <input type="number" id="productPrice" name="price" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter price">
             </div>
-        
+            
+            <div>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="productFeatured" name="is_featured" value="1" class="mr-2">
+                    <span class="text-sm text-gray-700">Mark as Featured</span>
+                </label>
+            </div>
+
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
                 <button type="button" onclick="closeProductModal()" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">Cancel</button>
                 <button type="button" id="saveProductBtn" onclick="saveProductAjax(event)" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">Save Product</button>
@@ -318,7 +325,7 @@ function openAddModal() {
 }
 
 // Accept filePath as an extra argument
-function openUpdateModal(productId, name, description, stock, price, typeId, filePath) {
+function openUpdateModal(productId, name, description, stock, price, typeId, filePath, isFeatured) {
     document.getElementById('modalTitle').textContent = 'Update Product';
     document.getElementById('productModal').classList.remove('hidden');
     document.getElementById('productModal').classList.add('flex');
@@ -330,6 +337,8 @@ function openUpdateModal(productId, name, description, stock, price, typeId, fil
     document.getElementById('productStock').value = stock;
     document.getElementById('productPrice').value = price;
     document.getElementById('productType').value = typeId;
+    document.getElementById('productFeatured').checked = isFeatured ? true : false;
+
 
     // Show current image filename and preview if filePath is provided
     var filenameDiv = document.getElementById('currentImageFilename');
@@ -467,6 +476,33 @@ document.getElementById('deleteModal').addEventListener('click', function(e) {
     }
 });
 </script>   
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize DataTable
+        // Add padding to DataTable controls after initialization
+        $('#productsTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50, 100],
+            columnDefs: [
+            { orderable: false, targets: 0 },
+            { orderable: false, targets: -1 }
+            ],
+            drawCallback: function() {
+            // Add padding classes to DataTable controls
+            $('.dataTables_length').addClass('px-4 py-2');
+            $('.dataTables_filter').addClass('px-4 py-2');
+            $('.dataTables_paginate').addClass('px-4 py-2');
+            }
+        });
+        // Initial padding for controls
+        $('.dataTables_length').addClass('px-4 py-2');
+        $('.dataTables_filter').addClass('px-4 py-2');
+        $('.dataTables_paginate').addClass('px-4 py-2');
+        });
+</script>
 
 @include('admin.includes.script')
 @include('admin.includes.footer')

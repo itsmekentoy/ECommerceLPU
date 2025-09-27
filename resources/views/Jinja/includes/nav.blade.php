@@ -29,7 +29,7 @@
                 <span class="cart-badge" id="cartBadge">0</span>
             </button>
            
-            @if(session()->has('customer_id'))
+            @if($currentCustomer)
 
                 <button type="button" class="login-btn" onclick="openProfileModal()" style="margin-right:0.5rem;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -38,7 +38,16 @@
                     Profile
                 </button>
 
-                <!-- Chat Button and Dropdown -->
+                @php
+                    $adminChats = \App\Models\UserConversationWithAdmin::where('user_id', $currentCustomer->id)->with('admin')->get();
+                    $adminConversationMap = [];
+                    foreach ($adminChats as $chat) {
+                        $adminConversationMap[$chat->admin->id] = $chat->id;
+                    }
+                @endphp
+                <script>
+                window.adminConversationMap = @json($adminConversationMap);
+                </script>
                 <div style="display:inline-block;position:relative;">
                     <button type="button" id="chatBtn" style="background:#fff;border:none;border-radius:50%;width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.12);cursor:pointer;">
                         <svg width="22" height="22" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -46,42 +55,41 @@
                         </svg>
                     </button>
                     <div id="chatDropdown" style="display:none;position:absolute;right:0;top:2.8rem;width:340px;background:#fff;border-radius:1rem;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:0.5rem 0.5rem 0.5rem 0.5rem;z-index:10000;">
-                        <div style="font-weight:600;font-size:1rem;margin-bottom:0.5rem;">Chats</div>
+                        <div style="font-weight:600;font-size:1rem;margin-bottom:0.5rem;">Chats with Admins</div>
                         <div style="max-height:180px;overflow-y:auto;margin-bottom:0.5rem;">
-                            <!-- Example chat list -->
-                            <div onclick="openChatModal('John Doe')" style="padding:0.5rem 0.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;display:flex;align-items:center;">
-                                <div style="width:2.2rem;height:2.2rem;background:#fed7aa;border-radius:50%;margin-right:0.7rem;"></div>
-                                <div>
-                                    <div style="font-weight:500;">John Doe</div>
-                                    <div style="font-size:0.85rem;color:#6b7280;">Hey, I have a question...</div>
+                            @php
+                                $adminChats = \App\Models\UserConversationWithAdmin::where('user_id', $currentCustomer->id)->with('admin')->get();
+                            @endphp
+                            @forelse($adminChats as $chat)
+                                @php
+                                    $latestMsg = \App\Models\ConversationMessage::where('conversation_id', $chat->id)->orderByDesc('created_at')->first();
+                                @endphp
+                                <div onclick="openChatModal('{{ $chat->admin->name ?? 'Admin' }}', '{{ $chat->admin->id }}')" style="padding:0.5rem 0.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;display:flex;align-items:center;">
+                                    <div style="width:2.2rem;height:2.2rem;background:#fed7aa;border-radius:50%;margin-right:0.7rem;"></div>
+                                    <div>
+                                        <div style="font-weight:500;">{{ $chat->admin->name ?? 'Admin' }}</div>
+                                        <div style="font-size:0.85rem;color:#6b7280;">
+                                            {{ $latestMsg ? $latestMsg->message : 'No messages yet.' }}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div onclick="openChatModal('Jane Smith')" style="padding:0.5rem 0.5rem;border-bottom:1px solid #f3f4f6;cursor:pointer;display:flex;align-items:center;">
-                                <div style="width:2.2rem;height:2.2rem;background:#fca5a5;border-radius:50%;margin-right:0.7rem;"></div>
-                                <div>
-                                    <div style="font-weight:500;">Jane Smith</div>
-                                    <div style="font-size:0.85rem;color:#6b7280;">Thank you for your help!</div>
-                                </div>
-                            </div>
-                            <div onclick="openChatModal('Support')" style="padding:0.5rem 0.5rem;cursor:pointer;display:flex;align-items:center;">
-                                <div style="width:2.2rem;height:2.2rem;background:#a7f3d0;border-radius:50%;margin-right:0.7rem;"></div>
-                                <div>
-                                    <div style="font-weight:500;">Support</div>
-                                    <div style="font-size:0.85rem;color:#6b7280;">How can we assist you?</div>
-                                </div>
-                            </div>
+                            @empty
+                                <div style="padding:0.5rem;color:#6b7280;">No admin chats yet.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
                 <!-- Chat Conversation Modal -->
                 <div id="chatModal" style="position:fixed;inset:0;z-index:10001;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
-                    <div style="background:#fff;border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:100%;max-width:420px;padding:2rem;position:relative;display:flex;flex-direction:column;max-height:90vh;">
+                    <div style="background:#fff;border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:100%;max-width:600px;padding:1.2rem;position:relative;display:flex;flex-direction:column;max-height:98vh;height:700px;">
                         <button onclick="closeChatModal()" style="position:absolute;top:1rem;right:1rem;color:#6b7280;font-size:2rem;background:none;border:none;cursor:pointer;">&times;</button>
                         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;">
                             <div id="chatModalAvatar" style="width:2.8rem;height:2.8rem;background:#fed7aa;border-radius:50%;"></div>
                             <div id="chatModalName" style="font-weight:600;font-size:1.1rem;">Chat Name</div>
                         </div>
-                        <div id="chatMessages" style="flex:1;overflow-y:auto;background:#f9fafb;border-radius:0.7rem;padding:1rem;margin-bottom:1rem;min-height:120px;max-height:220px;">
+                        <div id="chatMessages" style="flex:1;overflow-y:auto;background:#f9fafb;border-radius:0.7rem;padding:1rem;margin-bottom:1rem;min-height:350px;max-height:520px;">
                             <!-- Example messages -->
-                            <div style="margin-bottom:0.7rem;"><span style="background:#ea580c;color:#fff;padding:0.4rem 0.8rem;border-radius:1rem 1rem 0.2rem 1rem;display:inline-block;">Hello! How can I help you?</span></div>
-                            <div style="text-align:right;"><span style="background:#e5e7eb;color:#374151;padding:0.4rem 0.8rem;border-radius:1rem 1rem 1rem 0.2rem;display:inline-block;">I have a question about my order.</span></div>
+                            <div style="display:none;"></div>
                         </div>
                         <form id="chatModalForm" style="display:flex;align-items:center;gap:0.4rem;">
                             <input type="text" placeholder="Type a message..." style="flex:1;padding:0.5rem 0.8rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;font-size:1rem;" />
@@ -96,23 +104,108 @@
                     </div>
                 </div>
                 <script>
-                    function openChatModal(name) {
-                        document.getElementById('chatModal').style.display = 'flex';
-                        document.getElementById('chatModalName').textContent = name;
-                        // Set avatar color based on name (for demo)
-                        var avatar = document.getElementById('chatModalAvatar');
-                        if(name === 'Jane Smith') avatar.style.background = '#fca5a5';
-                        else if(name === 'Support') avatar.style.background = '#a7f3d0';
-                        else avatar.style.background = '#fed7aa';
-                    }
-                    function closeChatModal() {
-                        document.getElementById('chatModal').style.display = 'none';
-                    }
-                    document.getElementById('chatModalForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        // TODO: Add AJAX send logic here
-                        alert('Message sent (template only)');
-                    });
+window.chatPollingInterval = null;
+window.currentChatAdminId = null;
+
+window.openChatModal = function(name, adminId) {
+    document.getElementById('chatModal').style.display = 'flex';
+    document.getElementById('chatModalName').textContent = name;
+    window.currentChatAdminId = adminId;
+    window.fetchChatMessages();
+    window.startChatPolling();
+    // Set avatar color based on name (for demo)
+    var avatar = document.getElementById('chatModalAvatar');
+    avatar.style.background = '#fed7aa';
+}
+window.closeChatModal = function() {
+    document.getElementById('chatModal').style.display = 'none';
+    window.stopChatPolling();
+}
+window.fetchChatMessages = function() {
+    fetch('{{ route('conversation.fetch') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            conversation_id: window.getConversationIdForAdmin(window.currentChatAdminId)
+        })
+    })
+    .then(response => response.json())
+    .then(messages => {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+        messages.forEach(msg => {
+            const isSender = msg.sender_type === 'user';
+            const msgDiv = document.createElement('div');
+            msgDiv.style.marginBottom = '0.7rem';
+            if (isSender) {
+                msgDiv.style.textAlign = 'right';
+                msgDiv.innerHTML = `<span style="background:#e5e7eb;color:#374151;padding:0.4rem 0.8rem;border-radius:1rem 1rem 1rem 0.2rem;display:inline-block;">${msg.message}</span>`;
+            } else {
+                msgDiv.innerHTML = `<span style="background:#ea580c;color:#fff;padding:0.4rem 0.8rem;border-radius:1rem 1rem 0.2rem 1rem;display:inline-block;">${msg.message}</span>`;
+            }
+            chatMessages.appendChild(msgDiv);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+}
+window.sendChatMessage = function(e) {
+    e.preventDefault();
+    const input = document.querySelector('#chatModalForm input[type="text"]');
+    const sendBtn = document.querySelector('#chatModalForm button[type="submit"]');
+    const messageText = input.value.trim();
+    if (!messageText) return;
+    // Show loader/spinner and disable button
+    sendBtn.disabled = true;
+    const originalBtnContent = sendBtn.innerHTML;
+    sendBtn.innerHTML = `<span class="spinner" style="display:inline-block;width:18px;height:18px;border:2px solid #fff;border-top:2px solid #ea580c;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;"></span>Sending...`;
+    fetch('{{ route('conversation.send') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            conversation_id: window.getConversationIdForAdmin(window.currentChatAdminId),
+            sender_type: 'user',
+            sender_id: {{ $currentCustomer->id ?? 'null' }},
+            message: messageText
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        input.value = '';
+        window.fetchChatMessages();
+    })
+    .finally(() => {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalBtnContent;
+    });
+}
+
+// Add spinner animation CSS
+const style = document.createElement('style');
+style.innerHTML = `@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`;
+document.head.appendChild(style);
+
+window.startChatPolling = function() {
+    if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);
+    window.chatPollingInterval = setInterval(window.fetchChatMessages, 2000);
+}
+window.stopChatPolling = function() {
+    if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);
+}
+window.getConversationIdForAdmin = function(adminId) {
+    // You may want to pass conversation_id from blade, or fetch it via AJAX
+    // For demo, assume you have a JS object mapping adminId to conversationId
+    if (window.adminConversationMap && window.adminConversationMap[adminId]) {
+        return window.adminConversationMap[adminId];
+    }
+    return null;
+}
+document.getElementById('chatModalForm').addEventListener('submit', window.sendChatMessage);
                 </script>
                         </div>
                         <!-- Message box removed from dropdown -->
@@ -157,35 +250,36 @@
                                 </button>
                                 <input type="file" id="profileImageInput" accept="image/*" style="display:none;" />
                             </div>
-                <script>
-                    function triggerProfileImageUpload() {
-                        document.getElementById('profileImageInput').click();
-                    }
-                    document.getElementById('profileImageInput').addEventListener('change', function(e) {
-                        // TODO: Add AJAX upload logic here
-                        alert('Profile image update feature coming soon!');
-                    });
-                </script>
-                            <div id="profileName" style="font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;">{{ session('customer_name', 'Customer Name') }}</div>
-                            <div id="profileEmail" style="color:#6b7280;font-size:0.875rem;">{{ session('customer_email', 'customer@email.com') }}</div>
+                            <script>
+                                function triggerProfileImageUpload() {
+                                    document.getElementById('profileImageInput').click();
+                                }
+                                document.getElementById('profileImageInput').addEventListener('change', function(e) {
+                                    // TODO: Add AJAX upload logic here
+                                    alert('Profile image update feature coming soon!');
+                                });
+                            </script>
+                            <div id="profileName" style="font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;">{{ $currentCustomer->name ?? 'Customer Name' }}</div>
+                            <div id="profileEmail" style="color:#6b7280;font-size:0.875rem;">{{ $currentCustomer->email ?? 'customer@email.com' }}</div>
                         </div>
                         <hr style="margin-bottom:1.5rem;">
                         <form id="profileForm">
+                            @csrf
                             <div style="margin-bottom:1rem;">
                                 <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalName">Name</label>
-                                <input id="modalName" name="name" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;" value="{{ session('customer_name', 'Customer Name') }}">
+                                <input id="modalName" name="name" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;" value="{{ $currentCustomer->name ?? '' }}">
                             </div>
                             <div style="margin-bottom:1rem;">
                                 <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalEmail">Email</label>
-                                <input id="modalEmail" name="email" type="email" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;background:#f3f4f6;" value="{{ session('customer_email', 'customer@email.com') }}" readonly>
+                                <input id="modalEmail" name="email" type="email" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;background:#f3f4f6;" value="{{ $currentCustomer->email ?? '' }}" readonly>
                             </div>
                             <div style="margin-bottom:1rem;">
                                 <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalMobile">Mobile Number</label>
-                                <input id="modalMobile" name="mobile" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;" value="{{ session('customer_mobile', '') }}">
+                                <input id="modalMobile" name="mobile" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;" value="{{ $currentCustomer->phone ?? '' }}">
                             </div>
                             <div style="margin-bottom:1.5rem;">
                                 <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalAddress">Address</label>
-                                <input id="modalAddress" name="address" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;" value="{{ session('customer_address', '') }}">
+                                <input id="modalAddress" name="address" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;" value="{{ $currentCustomer->address ?? '' }}">
                             </div>
                             <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
                                 <button type="button" onclick="closeProfileModal()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#e5e7eb;color:#374151;border:none;cursor:pointer;">Close</button>
@@ -204,8 +298,26 @@
                     }
                     document.getElementById('profileForm').addEventListener('submit', function(e) {
                         e.preventDefault();
-                        // TODO: Add AJAX call to save changes if needed
-                        closeProfileModal();
+                        
+                        // put it into form data
+                        var formData = new FormData(this);
+                        formData.append('customer_id', '{{ $currentCustomer->id }}');
+                        fetch('{{ route('customer.update.profile') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: formData
+                        })
+                        .then(
+                            // reload the page to reflect changes
+                            () => window.location.reload()
+                        )
+                        .catch(error => {
+                            console.error('Error updating profile:', error);
+                        });
+
+                        
                     });
                 </script>
                 

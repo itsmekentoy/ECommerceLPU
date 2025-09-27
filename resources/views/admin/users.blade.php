@@ -29,108 +29,61 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($customers as $user)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <span class="text-sm font-medium text-primary">
+                                                    {{ strtoupper(substr($user->name, 0, 1) . substr(strrchr($user->name, ' '), 1, 1)) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $user->name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $user->email }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $user->phone }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $user->address }}    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-3">
+                                        <!-- Conversation Button with Badge -->
+                                        <button onclick="openConversationModalWithLoader({{ $user->id }}, this)" class="relative text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
+                                            <span class="loader hidden absolute inset-0 flex items-center justify-center bg-white bg-opacity-60 rounded-md">
+                                                <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                                </svg>
+                                            </span>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                            </svg>
+                                            {{-- <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">1</span> --}}
+                                        </button>
+                                        <!-- Update Status Button -->
+                                        <button onclick="openStatusModal({{ $user->id }})" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                         <!-- Sample User Rows -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span class="text-sm font-medium text-primary">JD</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">John Doe</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">john.doe@email.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">+63 912 345 6789</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">123 Main St, Ibaan, Batangas</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-3">
-                                    <!-- Conversation Button with Badge -->
-                                    <button onclick="openConversationModal(1)" class="relative text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">1</span>
-                                    </button>
-                                    <!-- Update Status Button -->
-                                    <button onclick="openStatusModal(1)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span class="text-sm font-medium text-primary">JS</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">Jane Smith</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">jane.smith@email.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">+63 917 654 3210</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">456 Oak Ave, Lipa, Batangas</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-3">
-                                    <!-- Conversation Button without Badge -->
-                                    <button onclick="openConversationModal(2)" class="text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Update Status Button -->
-                                    <button onclick="openStatusModal(2)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span class="text-sm font-medium text-primary">MJ</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">Maria Johnson</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">maria.johnson@email.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">+63 905 123 4567</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">789 Pine St, Batangas City</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-3">
-                                    <!-- Conversation Button with Badge -->
-                                    <button onclick="openConversationModal(3)" class="relative text-blue-600 hover:text-blue-800 transition-colors border border-blue-400 rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">1</span>
-                                    </button>
-                                    <!-- Update Status Button -->
-                                    <button onclick="openStatusModal(3)" class="text-primary hover:text-primary/80 transition-colors border border-primary rounded-md px-2 py-1">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        
+                       
                     </tbody>
                 </table>
             </div>
@@ -183,7 +136,7 @@
             <!-- Sample Messages -->
             <div class="space-y-4">
                 <!-- User Message -->
-                <div class="flex justify-end">
+                {{-- <div class="flex justify-end">
                     <div class="max-w-xs lg:max-w-md px-4 py-2 bg-primary text-white rounded-lg">
                         <p class="text-sm">Hello! I have a question about my recent order.</p>
                         <span class="text-xs opacity-75 mt-1 block">2:30 PM</span>
@@ -204,7 +157,7 @@
                         <p class="text-sm">I haven't received my order yet. It's been 5 days since I placed it.</p>
                         <span class="text-xs opacity-75 mt-1 block">2:35 PM</span>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         
@@ -212,10 +165,14 @@
         <div class="px-6 py-4 border-t border-gray-200">
             <div class="flex space-x-3">
                 <input type="text" id="newMessage" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Type your message...">
-                <button onclick="sendNewMessage()" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                    </svg>
+                <button id="sendMessageBtn" onclick="sendNewMessage()" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors flex items-center justify-center">
+                    <span id="sendBtnText">Send</span>
+                    <span id="sendBtnSpinner" class="ml-2 hidden">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                    </span>
                 </button>
             </div>
         </div>
@@ -227,7 +184,9 @@
 <script>
 let currentUserId = null;
 let isEditMode = false;
-
+// Get AJAX URLs from blade
+const fetchMessagesUrl = '{{ route('conversation.fetch') }}';
+const sendMessageUrl = '{{ route('conversation.send') }}';
 
 function openStatusModal(userId) {
     currentUserId = userId;
@@ -256,57 +215,119 @@ function saveStatus() {
     alert('User status updated!');
 }
 
-function openConversationModal(userId) {
-    currentUserId = userId;
-    
-    // Set user name based on userId (in real app, fetch from database)
-    const userNames = {1: 'John Doe', 2: 'Jane Smith', 3: 'Maria Johnson'};
-    document.getElementById('conversationUserName').textContent = userNames[userId] || 'User';
-    
-    document.getElementById('conversationModal').classList.remove('hidden');
-    document.getElementById('conversationModal').classList.add('flex');
-    
-    // Scroll to bottom of messages
-    const messagesContainer = document.getElementById('conversationMessages');
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+function openConversationModalWithLoader(userId, btn) {
+    const loader = btn.querySelector('.loader');
+    loader.classList.remove('hidden');
+    btn.disabled = true;
+    fetch('{{ route('conversation.getOrCreate') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ user_id: userId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        currentUserId = data.conversation_id;
+        const userNames = {1: 'John Doe', 2: 'Jane Smith', 3: 'Maria Johnson'};
+        document.getElementById('conversationUserName').textContent = userNames[userId] || 'User';
+        document.getElementById('conversationModal').classList.remove('hidden');
+        document.getElementById('conversationModal').classList.add('flex');
+        fetchConversationMessages();
+        startPollingMessages();
+    })
+    .finally(() => {
+        loader.classList.add('hidden');
+        btn.disabled = false;
+    });
 }
 
 function closeConversationModal() {
     document.getElementById('conversationModal').classList.add('hidden');
     document.getElementById('conversationModal').classList.remove('flex');
     document.getElementById('newMessage').value = '';
+    stopPollingMessages();
 }
 
 function sendNewMessage() {
     const messageInput = document.getElementById('newMessage');
     const messageText = messageInput.value.trim();
-    
-    if (!messageText) {
-        return;
-    }
-    
-    // Add message to conversation
-    const messagesContainer = document.getElementById('conversationMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'flex justify-start';
-    
-    const currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    
-    messageDiv.innerHTML = `
-        <div class="max-w-xs lg:max-w-md px-4 py-2 bg-white border rounded-lg">
-            <p class="text-sm text-gray-800">${messageText}</p>
-            <span class="text-xs text-gray-500 mt-1 block">${currentTime}</span>
-        </div>
-    `;
-    
-    messagesContainer.querySelector('.space-y-4').appendChild(messageDiv);
-    
-    // Clear input and scroll to bottom
-    messageInput.value = '';
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
-    // Here you would typically send the message to your backend
-    console.log('Sending message to user ID:', currentUserId, messageText);
+    const sendBtn = document.getElementById('sendMessageBtn');
+    const sendBtnText = document.getElementById('sendBtnText');
+    const sendBtnSpinner = document.getElementById('sendBtnSpinner');
+    if (!messageText) return;
+    // Show loading spinner
+    sendBtnText.classList.add('hidden');
+    sendBtnSpinner.classList.remove('hidden');
+    fetch(sendMessageUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            conversation_id: currentUserId,
+            sender_type: 'admin', // or 'user'
+            sender_id: 1, // set actual sender id
+            message: messageText
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        messageInput.value = '';
+        fetchConversationMessages();
+    })
+    .finally(() => {
+        // Hide loading spinner
+        sendBtnText.classList.remove('hidden');
+        sendBtnSpinner.classList.add('hidden');
+    });
+}
+
+function fetchConversationMessages() {
+    fetch(fetchMessagesUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            conversation_id: currentUserId
+        })
+    })
+    .then(response => response.json())
+    .then(messages => {
+        const messagesContainer = document.getElementById('conversationMessages');
+        const spaceY4 = messagesContainer.querySelector('.space-y-4');
+        spaceY4.innerHTML = '';
+        messages.forEach(msg => {
+            // sender_type: 'admin' or 'user', sender_id: id
+            // Assume current admin id is 1 (replace with actual admin id if needed)
+            const isSender = msg.sender_type === 'admin' && msg.sender_id == 1;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = isSender ? 'flex justify-end' : 'flex justify-start';
+            msgDiv.innerHTML = `
+                <div class="max-w-xs lg:max-w-md px-4 py-2 ${isSender ? 'bg-primary text-white' : 'bg-white border text-gray-800'} rounded-lg">
+                    <p class="text-sm">${msg.message}</p>
+                    <span class="text-xs ${isSender ? 'opacity-75' : 'text-gray-500'} mt-1 block">${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>
+            `;
+            spaceY4.appendChild(msgDiv);
+        });
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+}
+
+let pollingInterval = null;
+
+function startPollingMessages() {
+    if (pollingInterval) clearInterval(pollingInterval);
+    pollingInterval = setInterval(fetchConversationMessages, 2000);
+}
+
+function stopPollingMessages() {
+    if (pollingInterval) clearInterval(pollingInterval);
 }
 
 function confirmDelete() {

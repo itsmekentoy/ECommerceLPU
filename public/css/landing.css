@@ -351,8 +351,8 @@ h6 {
 
 .product-card img {
   width: 100%;
-  height: 250px;
-  object-fit: cover;
+  height: 150px;
+  object-fit: contain;
 }
 
 .product-info {

@@ -25,5 +25,16 @@
             font-family: 'Poppins';
         }
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- DataTables Tailwind CSS -->
+    <!-- Tailwind CSS (your own app.css already has it via Vite) -->
+
+<!-- DataTables 2 + Tailwind -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link href="https://cdn.datatables.net/2.0.8/css/dataTables.tailwindcss.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.tailwindcss.js"></script>
+
+
 </head>
 <body class="bg-gray-50">

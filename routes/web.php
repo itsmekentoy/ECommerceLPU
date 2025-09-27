@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\AdminController;
@@ -14,6 +15,7 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/register', 'store')->name('register.store');
     Route::get('/confirmation', 'confirmEmail')->name('confirm.email');
+    Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
 });
 
 Route::controller(LandinPageController::class)->group(function () {
@@ -21,6 +23,13 @@ Route::controller(LandinPageController::class)->group(function () {
     Route::get('/about', 'about')->name('about');
     Route::get('/shop', 'shop')->name('shop');
     Route::get('/contact', 'contact')->name('contact');
+
+});
+Route::controller(AddtoCart::class)->group(function () {
+    Route::get('/cart/items', 'fetchCartItems')->name('cart.items');
+    Route::post('/add-to-cart', 'addtoCart')->name('add.to.cart');
+    Route::post('/cart/remove', 'removeItemFromCart')->name('cart.remove');
+    Route::post('/cart/update', 'updateCartItem')->name('cart.update');
 });
 
 Route::controller(AdminController::class)->group(function () {
@@ -39,3 +48,12 @@ Route::controller(ProductItemController::class)->group(function () {
 Route::controller(CustomerInformation::class)->group(function () {
     Route::get('/admin/customers', 'index')->name('admin.customers');
 });
+
+// Conversation message AJAX routes
+use App\Http\Controllers\ConversationMessageController;
+
+Route::post('/conversation/messages/fetch', [ConversationMessageController::class, 'fetch'])->name('conversation.fetch');
+Route::post('/conversation/messages/send', [ConversationMessageController::class, 'send'])->name('conversation.send');
+use App\Http\Controllers\UserConversationWithAdminController;
+
+Route::post('/conversation/get-or-create', [UserConversationWithAdminController::class, 'getOrCreate'])->name('conversation.getOrCreate');

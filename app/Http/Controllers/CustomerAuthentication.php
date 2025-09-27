@@ -210,4 +210,63 @@ class CustomerAuthentication extends Controller
 
         return redirect()->route('home');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $customerId = session('customer_id');
+
+        if (! $customerId) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('You must be logged in to update your profile.');
+
+            return response()->back()->withInput();
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'mobile' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                notyf()
+                    ->duration(2000)
+                    ->position('x', 'center')
+                    ->position('y', 'top')
+                    ->dismissible(true)
+                    ->error($error);
+            }
+
+            return response()->back()->withErrors($validator)->withInput();
+        }
+
+        $customer = CustomerInformationData::find($customerId);
+        if (! $customer) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('User not found');
+
+            return response()->back()->withInput();
+        }
+
+        $customer->name = $request->input('name');
+        $customer->phone = $request->input('mobile');
+        $customer->address = $request->input('address');
+        $customer->save();
+
+        notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('Profile updated successfully!');
+    }
 }

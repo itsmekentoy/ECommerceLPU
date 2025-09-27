@@ -46,59 +46,30 @@
             <p class="section-subtitle">Discover our most popular local products</p>
             
             <div class="featured-grid">
+                @foreach($featuredItems as $item)
                 <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Woven Basket">
+                    <img src="{{ asset('storage/products/' . $item->file_path) }}" alt="{{ $item->item_name }}">
                     <div class="product-info">
-                        <h3>Traditional Woven Basket</h3>
-                        <p class="product-price">₱450.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 1, name: 'Traditional Woven Basket', price: 450, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
+                        <h3>{{ $item->item_name }}</h3>
+                        <p class="product-price">₱{{ number_format($item->price, 2) }}</p>
+                        <button class="add-to-cart-btn"
+                        @if ($item->stock <= 0)
+                            disabled style='background-color: gray; cursor: not-allowed;'
+                        @endif
+                        onclick="addToCart({id: {{ $item->id }}, name: '{{ addslashes($item->item_name) }}', price: {{ $item->price }}, image: '{{ asset('storage/products/' . $item->file_path) }}'})">
+                        @if ($item->stock > 0)
+                            Add to Cart
+                        @else
+                            Out of Stock
+                            
+                        @endif
+                        </button>
                     </div>
                 </div>
+                @endforeach
                 
-                <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Handmade Pottery">
-                    <div class="product-info">
-                        <h3>Handmade Pottery Set</h3>
-                        <p class="product-price">₱680.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 2, name: 'Handmade Pottery Set', price: 680, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                    </div>
-                </div>
                 
-                <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Organic Honey">
-                    <div class="product-info">
-                        <h3>Pure Organic Honey</h3>
-                        <p class="product-price">₱320.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 3, name: 'Pure Organic Honey', price: 320, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                    </div>
-                </div>
                 
-                <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Traditional Textile">
-                    <div class="product-info">
-                        <h3>Traditional Textile</h3>
-                        <p class="product-price">₱890.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 4, name: 'Traditional Textile', price: 890, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                    </div>
-                </div>
-                
-                <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Wooden Craft">
-                    <div class="product-info">
-                        <h3>Handcrafted Wood Art</h3>
-                        <p class="product-price">₱1,250.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 5, name: 'Handcrafted Wood Art', price: 1250, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                    </div>
-                </div>
-                
-                <div class="product-card">
-                    <img src="/placeholder.svg?height=250&width=250" alt="Coffee Beans">
-                    <div class="product-info">
-                        <h3>Premium Coffee Beans</h3>
-                        <p class="product-price">₱540.00</p>
-                        <button class="add-to-cart-btn" onclick="addToCart({id: 6, name: 'Premium Coffee Beans', price: 540, image: '/placeholder.svg?height=60&width=60'})">Add to Cart</button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
