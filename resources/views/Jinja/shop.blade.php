@@ -25,13 +25,13 @@
                         {{ $itemType->type_name }}
                     </button>
                 @endforeach
-                <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                {{-- <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                         onclick="showCustomizeModal()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                     </svg>
                     Add Customize Product
-                </button>
+                </button> --}}
             </div>
 
             <!-- Products Grid -->
@@ -52,24 +52,15 @@
                                 <p class="product-price font-bold text-blue-600">₱{{ number_format($item->price, 2) }}</p>
 
                                 <!-- Add to Cart Button -->
-                                <button 
-                                class="add-to-cart-btn mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                @if ($item->stock <= 0)
-                                    disabled style='background-color: gray; cursor: not-allowed;'
-                                    
-                                @endif
-                                    onclick="addToCart({
-                                        id: {{ $item->id }},
-                                        name: '{{ $item->name }}',
-                                        price: {{ $item->price }},
-                                        image: '{{ asset('storage/products/' . $item->file_path) }}'
-                                    })">
-                                    @if ($item->stock > 0)
-                                        Add to Cart
-                                    @else
-                                        Out of Stock
-                                    @endif
+                                @if($currentCustomer)
+                               <button onclick="addToCart({{ $item->id }})"
+                                    class="add-to-cart-btn"
+                                    @if ($item->stock <= 0)
+                                        disabled style="background-color: gray; cursor: not-allowed;"
+                                    @endif>
+                                    {{ $item->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
                                 </button>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -79,57 +70,7 @@
     </section>
 </main>
 
-<script>
-    // Tab functionality
-    function showTab(event, category) {
-        // Update tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
 
-        // Show/hide products
-        document.querySelectorAll('.product-card').forEach(product => {
-            if (category === 'all' || product.dataset.category === category) {
-                product.style.display = 'block';
-            } else {
-                product.style.display = 'none';
-            }
-        });
-    }
-
-    // Simple Add to Cart
-    function addToCart(product) {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cart.push(product);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartBadge();
-        alert(product.name + " added to cart!");
-    }
-
-    // Update Cart Badge (if you have a cart icon)
-    function updateCartBadge() {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let badge = document.getElementById('cart-badge');
-        if (badge) {
-            badge.textContent = cart.length;
-        }
-    }
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-        updateCartBadge();
-    });
-
-    // Customize modal functionality (placeholder functions)
-    function showCustomizeModal() {
-        const modal = document.getElementById('customizeModal');
-        if (modal) modal.style.display = 'flex';
-    }
-
-    function closeCustomizeModal() {
-        const modal = document.getElementById('customizeModal');
-        if (modal) modal.style.display = 'none';
-    }
-</script>
 
 @include('jinja.includes.cart')
 @include('jinja.includes.footer')

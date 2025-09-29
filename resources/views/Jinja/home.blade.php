@@ -52,18 +52,16 @@
                     <div class="product-info">
                         <h3>{{ $item->item_name }}</h3>
                         <p class="product-price">₱{{ number_format($item->price, 2) }}</p>
-                        <button class="add-to-cart-btn"
-                        @if ($item->stock <= 0)
-                            disabled style='background-color: gray; cursor: not-allowed;'
-                        @endif
-                        onclick="addToCart({id: {{ $item->id }}, name: '{{ addslashes($item->item_name) }}', price: {{ $item->price }}, image: '{{ asset('storage/products/' . $item->file_path) }}'})">
-                        @if ($item->stock > 0)
-                            Add to Cart
-                        @else
-                            Out of Stock
-                            
-                        @endif
+                        @if($currentCustomer)
+                        <button onclick="addToCart({{ $item->id }})"
+                            class="add-to-cart-btn"
+                            @if ($item->stock <= 0)
+                                disabled style="background-color: gray; cursor: not-allowed;"
+                            @endif>
+                            {{ $item->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
                         </button>
+                        @endif
+
                     </div>
                 </div>
                 @endforeach
@@ -74,6 +72,10 @@
         </div>
     </section>
 </main>    
+
+
+
+
 @include('jinja.includes.cart')
 @include('jinja.includes.footer')
 @include('jinja.includes.scripts')

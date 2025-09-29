@@ -21,13 +21,17 @@
 
         
         <div class="nav-actions">
+            @if($currentCustomer)
             <button class="cart-btn" onclick="toggleCart()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-2h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0 0 20.5 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7.42c-.14 0-.25-.11-.26-.25z"/>
                 </svg>
                 Cart
-                <span class="cart-badge" id="cartBadge">0</span>
+                <span class="cart-badge" id="cartBadge">
+                    {{ $countItems ?? 0 }}  
+                </span>
             </button>
+            @endif
            
             @if($currentCustomer)
 
@@ -332,3 +336,42 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
         </div>
     </div>
 </nav>
+<!-- Overlay -->
+<div id="overlay" class="overlay" style="position:fixed;inset:0;z-index:9998;display:none;background:rgba(0,0,0,0.4);">
+    <button onclick="closeCart()" style="position:absolute;top:1.5rem;right:2rem;background:none;border:none;font-size:2rem;color:#fff;cursor:pointer;z-index:10000;">&times;</button>
+</div>
+
+<!-- Sidebar -->
+<div id="cartSidebar" class="cart-sidebar">
+    <h3 style="text-align:center;margin-top:1rem;">Your Cart</h3>
+    <div id="cartContent"></div>
+    <div id="cartTotal" style="display: none;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <strong>Total:</strong> <span id="totalAmount">₱0.00</span>
+            <button id="checkoutBtn" onclick="checkout()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: #ea580c; color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">
+                Proceed to Checkout
+            </button>
+            <script>
+                function checkout() {
+                    window.location.href = "{{ route('item.checkout') }}";
+                }
+            </script>
+            <button onclick="closeCart();" style="margin-top:1rem; padding:0.5rem 1.5rem; background:#e5e7eb; color:#374151; border:none; border-radius:0.5rem; font-weight:600; cursor:pointer;">
+                Back to Home
+            </button>
+            <script>
+                function closeCart() {
+                    document.getElementById('cartSidebar').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
+                }
+                function toggleCart() {
+                    var sidebar = document.getElementById('cartSidebar');
+                    var overlay = document.getElementById('overlay');
+                    var isOpen = sidebar.style.display === 'block';
+                    sidebar.style.display = isOpen ? 'none' : 'block';
+                    overlay.style.display = isOpen ? 'none' : 'block';
+                }
+            </script>
+        </div>
+    </div>
+</div>

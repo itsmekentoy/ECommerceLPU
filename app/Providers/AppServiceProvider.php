@@ -26,12 +26,22 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $customer = null;
             $adminChatPreviews = [];
+            $cartItems = collect();
+            $countItems = 0;
+
             if (session()->has('customer_id')) {
                 $customer = CustomerInformation::find(session('customer_id'));
+
                 if ($customer) {
-                    $adminChats = \App\Models\UserConversationWithAdmin::where('user_id', $customer->id)->with('admin')->get();
+                    $adminChats = \App\Models\UserConversationWithAdmin::where('user_id', $customer->id)
+                        ->with('admin')
+                        ->get();
+
                     foreach ($adminChats as $chat) {
-                        $latestMsg = ConversationMessage::where('conversation_id', $chat->id)->orderByDesc('created_at')->first();
+                        $latestMsg = ConversationMessage::where('conversation_id', $chat->id)
+                            ->orderByDesc('created_at')
+                            ->first();
+
                         $adminChatPreviews[] = [
                             'admin' => $chat->admin,
                             'conversation_id' => $chat->id,
@@ -39,16 +49,18 @@ class AppServiceProvider extends ServiceProvider
                         ];
                     }
                 }
-                $customerID = session('customer_id');
-                $cartItems = CustomerAddtoCart::where('customer_id', $customerID)->with('item')->get();
-                if (! $cartItems) {
-                    $cartItems = collect();
-                }
+
+                $cartItems = CustomerAddtoCart::where('customer_id', session('customer_id'))
+                    ->with('item')
+                    ->get();
+
+                $countItems = $cartItems->sum('quantity')?? 0;
             }
+
             $view->with('currentCustomer', $customer);
             $view->with('adminChatPreviews', $adminChatPreviews);
             $view->with('cartItems', $cartItems);
+            $view->with('countItems', $countItems);
         });
-
     }
 }

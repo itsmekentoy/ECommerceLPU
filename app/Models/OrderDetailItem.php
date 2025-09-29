@@ -15,6 +15,13 @@ class OrderDetailItem extends Model
 
     protected $table = 'order_detail_items';
 
-    
+    public function orderDetail()
+    {
+        return $this->belongsTo(OrderDetails::class, 'order_detail_id');
+    }
 
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id');
+    }
 }

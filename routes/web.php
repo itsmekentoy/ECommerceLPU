@@ -1,9 +1,11 @@
 
 <?php
 
+use App\Http\Controllers\AddtoCart;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerAuthentication;
 use App\Http\Controllers\CustomerInformation;
+use App\Http\Controllers\CustomerOrder;
 use App\Http\Controllers\LandinPageController;
 use App\Http\Controllers\ProductItemController;
 use Illuminate\Support\Facades\Route;
@@ -25,13 +27,15 @@ Route::controller(LandinPageController::class)->group(function () {
     Route::get('/contact', 'contact')->name('contact');
 
 });
-Route::controller(AddtoCart::class)->group(function () {
-    Route::get('/cart/items', 'fetchCartItems')->name('cart.items');
-    Route::post('/add-to-cart', 'addtoCart')->name('add.to.cart');
-    Route::post('/cart/remove', 'removeItemFromCart')->name('cart.remove');
-    Route::post('/cart/update', 'updateCartItem')->name('cart.update');
-});
 
+Route::get('/cart/items', [AddtoCart::class, 'fetchCartItems'])->name('cart.items');
+Route::post('/cart/add', [AddtoCart::class, 'addtoCart'])->name('add.to.cart');
+Route::post('/cart/update', [AddtoCart::class, 'updateCartItem'])->name('update.cart.item');
+Route::delete('/cart/remove', [AddtoCart::class, 'removeItemFromCart'])->name('remove.cart.item');
+Route::get('/item/checkout', [CustomerOrder::class, 'checkout'])->name('item.checkout');
+Route::get('/customer/orders', [CustomerOrder::class, 'ListOrders'])->name('customer.orders');
+Route::get('/customer/order/{id}', [CustomerOrder::class, 'viewOrder'])->name('customer.view.order');
+Route::post('updateOrderStatus/', [CustomerOrder::class, 'updateOrderStatus'])->name('admin.update.order.status');
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/dashboard', 'index')->name('admin.index');
 
