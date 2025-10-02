@@ -256,10 +256,7 @@ class CustomerOrder extends Controller
                     </table>
 
                     <table style='width:100%; margin-top:20px;'>
-                        <tr><td style='text-align:right;'>Subtotal:</td><td style='text-align:right;'>₱".number_format($subtotal, 2)."</td></tr>
-                        <tr><td style='text-align:right;'>Tax (12%):</td><td style='text-align:right;'>₱".number_format($tax, 2)."</td></tr>
-                        <tr><td style='text-align:right;'>Shipping:</td><td style='text-align:right;'>₱".number_format($shipping, 2)."</td></tr>
-                        <tr style='font-weight:bold;'><td style='text-align:right;'>Total:</td><td style='text-align:right;'>₱".number_format($grandTotal, 2)."</td></tr>
+                        <tr style='font-weight:bold;'><td style='text-align:right;'>Total:</td><td style='text-align:right;'>₱".number_format($subtotal, 2)."</td></tr>
                     </table>
                 </td>
             </tr>

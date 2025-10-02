@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserConversationWithAdmin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserConversationWithAdminController extends Controller
 {
@@ -11,7 +12,7 @@ class UserConversationWithAdminController extends Controller
     public function getOrCreate(Request $request)
     {
         $userId = $request->input('user_id');
-        $adminId = 1; // Or pass admin_id from frontend if needed
+        $adminId = Auth::guard('admin')->user()->id; // Or pass admin_id from frontend if needed
 
         $conversation = UserConversationWithAdmin::where('user_id', $userId)
             ->where('admin_id', $adminId)

@@ -133,6 +133,7 @@
                                     <td class="py-4 text-right text-gray-900">₱{{ number_format($item['price'], 2) }}</td>
                                     <td class="py-4 text-right font-medium text-gray-900">₱{{ number_format($itemTotal, 2) }}</td>
                                 </tr>
+                                
                             @endforeach
                         </tbody>
                     </table>
@@ -152,6 +153,9 @@
                                     <span class="text-gray-600">Tax:</span>
                                     <span class="text-gray-900">₱{{ number_format($order->tax_amount, 2) }}</span>
                                 </div>
+                                
+                            @else
+                                
                             @endif
                             
                             @if($order->shipping_amount > 0)

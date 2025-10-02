@@ -269,4 +269,22 @@ class CustomerAuthentication extends Controller
             ->dismissible(true)
             ->success('Profile updated successfully!');
     }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('customer_id');
+
+        notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('Logged out successfully!');
+
+        return redirect()->route('login');
+    }
+    public function showLinkRequestForm()
+    {
+        return view('jinja.forgot');
+    }
 }

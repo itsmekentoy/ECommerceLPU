@@ -57,19 +57,10 @@
                 </div>
                 
                 <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
-                        Password
-                    </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="password" 
-                        name="password"
-                        type="password" 
-                        placeholder="Enter your password"
-                    >
-                <div class="flex justify-end mt-2">
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot Password?</a>
-                </div>
+                    
+                    <div class="flex justify-end mt-2">
+                        <a href="" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Back to Login</a>
+                    </div>
                 </div>
                 
                 <button 
@@ -77,7 +68,7 @@
                     id="loginBtn"
                     class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                    Login
+                    Send New Password
                 </button>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -85,15 +76,12 @@
                 const btn = document.getElementById('loginBtn');
                 form.addEventListener('submit', function() {
                     btn.disabled = true;
-                    btn.textContent = 'Logging in...';
+                    btn.textContent = 'Loading...';
                 });
             });
         </script>
                 
-                <p class="text-center text-gray-600 text-sm">
-                    Already have an account? 
-                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium">Sign In</a>
-                </p>
+                
             </form>
         </div>
         

@@ -9,6 +9,11 @@ use App\Http\Controllers\CustomerOrder;
 use App\Http\Controllers\LandinPageController;
 use App\Http\Controllers\ProductItemController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAuthentication;
+use App\Http\Controllers\UserConversationWithAdminController;
+use Illuminate\Support\Facades\Auth;
+
+
 
 Route::controller(CustomerAuthentication::class)->group(function () {
     Route::get('/login', 'login')->name('login');
@@ -18,6 +23,7 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::post('/register', 'store')->name('register.store');
     Route::get('/confirmation', 'confirmEmail')->name('confirm.email');
     Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
+    Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
 });
 
 Route::controller(LandinPageController::class)->group(function () {
@@ -37,20 +43,20 @@ Route::get('/customer/orders', [CustomerOrder::class, 'ListOrders'])->name('cust
 Route::get('/customer/order/{id}', [CustomerOrder::class, 'viewOrder'])->name('customer.view.order');
 Route::post('updateOrderStatus/', [CustomerOrder::class, 'updateOrderStatus'])->name('admin.update.order.status');
 Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin/dashboard', 'index')->name('admin.index');
+    Route::get('/admin/dashboard', 'index')->name('admin.index')->middleware('auth:admin');
 
     Route::get('/admin/users', 'users')->name('admin.users');
 });
 
 Route::controller(ProductItemController::class)->group(function () {
-    Route::get('/admin/inventory', 'inventory')->name('admin.inventory');
-    Route::post('/admin/addItem', 'CreateProduct')->name('admin.add.item');
-    Route::delete('admin/{id}/deleteItem', 'DeleteItem')->name('admin.delete.item');
-    Route::post('admin/{id}/updateItem', 'UpdateItem')->name('admin.update.item');
+    Route::get('/admin/inventory', 'inventory')->name('admin.inventory')->middleware('auth:admin');
+    Route::post('/admin/addItem', 'CreateProduct')->name('admin.add.item')->middleware('auth:admin');
+    Route::delete('admin/{id}/deleteItem', 'DeleteItem')->name('admin.delete.item')->middleware('auth:admin');
+    Route::post('admin/{id}/updateItem', 'UpdateItem')->name('admin.update.item')->middleware('auth:admin');
 });
 
 Route::controller(CustomerInformation::class)->group(function () {
-    Route::get('/admin/customers', 'index')->name('admin.customers');
+    Route::get('/admin/customers', 'index')->name('admin.customers')->middleware('auth:admin');
 });
 
 // Conversation message AJAX routes
@@ -58,6 +64,12 @@ use App\Http\Controllers\ConversationMessageController;
 
 Route::post('/conversation/messages/fetch', [ConversationMessageController::class, 'fetch'])->name('conversation.fetch');
 Route::post('/conversation/messages/send', [ConversationMessageController::class, 'send'])->name('conversation.send');
-use App\Http\Controllers\UserConversationWithAdminController;
+
 
 Route::post('/conversation/get-or-create', [UserConversationWithAdminController::class, 'getOrCreate'])->name('conversation.getOrCreate');
+
+    Route::controller(AdminAuthentication::class)->group(function () {
+        Route::get('/admin/login', 'showLoginForm')->name('admin.login');
+        Route::post('/admin/login', 'login')->name('admin.authenticate');
+        Route::get('/admin/logout', 'logout')->name('admin.logout');
+    });

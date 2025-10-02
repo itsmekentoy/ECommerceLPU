@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HabingIbaan - Login</title>
+    <title>HabingIbaan - Admin Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
@@ -34,12 +34,12 @@
                 <span class="text-gray-800">Habing</span><span class="text-primary-dark">Ibaan</span>
             </h1>
 
-            <h3>Login</h3>
+            <h3>Admin Login</h3>
             <p class="text-gray-600 mb-6">
                 Please enter your email and password to log in.
             </p>
 
-            <form class="space-y-6" method="POST" action="{{ route('authenticate') }}" id="loginForm">
+            <form class="space-y-6" method="POST" action="{{ route('admin.authenticate') }}" id="loginForm">
                 @csrf
                 
 
@@ -67,9 +67,6 @@
                         type="password" 
                         placeholder="Enter your password"
                     >
-                <div class="flex justify-end mt-2">
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot Password?</a>
-                </div>
                 </div>
                 
                 <button 
@@ -90,10 +87,10 @@
             });
         </script>
                 
-                <p class="text-center text-gray-600 text-sm">
+                <!-- <p class="text-center text-gray-600 text-sm">
                     Already have an account? 
                     <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium">Sign In</a>
-                </p>
+                </p> -->
             </form>
         </div>
         

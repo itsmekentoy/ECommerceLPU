@@ -97,12 +97,7 @@
                         </div>
                         <form id="chatModalForm" style="display:flex;align-items:center;gap:0.4rem;">
                             <input type="text" placeholder="Type a message..." style="flex:1;padding:0.5rem 0.8rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;font-size:1rem;" />
-                            <label for="chatModalAttachment" style="cursor:pointer;display:flex;align-items:center;">
-                                <svg width="20" height="20" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                    <path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.19 9.19a1 1 0 0 1-1.41-1.41l9.19-9.19"/>
-                                </svg>
-                                <input type="file" id="chatModalAttachment" style="display:none;" />
-                            </label>
+                            
                             <button type="submit" style="background:#ea580c;color:#fff;border:none;border-radius:0.5rem;padding:0.5rem 1rem;font-weight:600;cursor:pointer;">Send</button>
                         </form>
                     </div>
@@ -287,8 +282,13 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                             </div>
                             <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
                                 <button type="button" onclick="closeProfileModal()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#e5e7eb;color:#374151;border:none;cursor:pointer;">Close</button>
+                                <button type="button" onclick="document.getElementById('logoutForm').submit()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#ef4444;color:#fff;font-weight:600;border:none;cursor:pointer;">Logout</button>
                                 <button type="submit" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#ea580c;color:#fff;font-weight:600;border:none;cursor:pointer;">Save Changes</button>
                             </div>
+                        </form>
+                        <!-- Hidden logout form outside profile form and button row -->
+                        <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display:none;">
+                            @csrf
                         </form>
                     </div>
                 </div>
