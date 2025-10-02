@@ -19,7 +19,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Total Orders</p>
-                        <p class="text-2xl font-bold text-gray-900">1,234</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $totalOrders }}</p>
                     </div>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Revenue</p>
-                        <p class="text-2xl font-bold text-gray-900">₱45,678</p>
+                        <p class="text-2xl font-bold text-gray-900">₱{{ number_format($sales, 2) }} </p>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Products</p>
-                        <p class="text-2xl font-bold text-gray-900">567</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $items->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -58,16 +58,63 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Users</p>
-                        <p class="text-2xl font-bold text-gray-900">890</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $countUsers }}</p>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Content Area -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
-            <p class="text-gray-600">Your main content area goes here. This is where you'll display tables, charts, forms, and other admin panel content.</p>
-        </div>
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Sales Overview</h2>
+                    <div class="bg-white rounded-lg shadow border p-4">
+                        <canvas id="salesChart" height="150"></canvas>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var ctx = document.getElementById('salesChart').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                                    datasets: [{
+                                        label: 'Sales',
+                                        data: [12000, 15000, 11000, 18000, 17000, 14000, 20000, 16000],
+                                        backgroundColor: 'rgba(234, 88, 12, 0.7)',
+                                        borderRadius: 8,
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: false },
+                                        title: { display: false }
+                                    },
+                                    scales: {
+                                        y: { beginAtZero: true }
+                                    }
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+                <div class="col-span-4 bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center">
+                    <!-- Recent Orders Widget -->
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Recent Orders</h3>
+                    <ul class="w-full space-y-3">
+                        @foreach($recentOrder as $order)
+                        <li class="bg-white rounded shadow p-3 flex flex-col">
+                            <a href="{{ route('customer.view.order', $order->id) }}" class="font-semibold text-gray-800 hover:text-primary">
+                                HI-{{ $order->order_code }}
+                            </a>
+                            <span class="text-xs text-gray-500"> ₱{{ number_format($order->total_amount, 2) }} &bull; {{ $order->created_at->format('Y-m-d') }}</span>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
     </div>
 </div>
 @include('admin.includes.script')
