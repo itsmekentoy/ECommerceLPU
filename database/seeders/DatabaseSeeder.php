@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
     {
         // run the item types seeder
         $this->call(add_item_types::class);
+        $this->call(user_seeder::class);
     }
 }
