@@ -49,4 +49,6 @@ class AdminAuthentication extends Controller
         $request->session()->regenerateToken();
         return redirect('/admin/login');
     }
+
+    
 }

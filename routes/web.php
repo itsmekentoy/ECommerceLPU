@@ -24,6 +24,7 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::get('/confirmation', 'confirmEmail')->name('confirm.email');
     Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
     Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
+    Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
 });
 
 Route::controller(LandinPageController::class)->group(function () {
@@ -46,6 +47,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/dashboard', 'index')->name('admin.index')->middleware('auth:admin');
 
     Route::get('/admin/users', 'users')->name('admin.users');
+    Route::post('/admin/printOrderItemsPerCategory', 'printOrderItemsPerCategory')->name('admin.printOrderItemsPerCategory');
 });
 
 Route::controller(ProductItemController::class)->group(function () {

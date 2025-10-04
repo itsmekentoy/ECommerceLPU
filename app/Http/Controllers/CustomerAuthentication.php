@@ -287,4 +287,43 @@ class CustomerAuthentication extends Controller
     {
         return view('jinja.forgot');
     }
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $csi = CustomerInformationData::where('email', $request->email)->first();
+        if (! $csi) {
+            Notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Email does not exist in our records.');
+            return redirect()->back()->withInput();
+        }
+
+        //generate the 8 character random password
+        $password = bin2hex(random_bytes(4)); // 8 characters
+        $mailerService = new MailerService;
+        $emailBody = view('email.password', [
+            'name' => $csi->name,
+            'password' => $password,
+        ])->render();
+
+        $csi->password = Hash::make($password);
+        $csi->save();
+
+        $emailResult = $mailerService->sendMail($csi->email, $emailBody);
+
+        notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('A new password has been sent to your email address.');
+
+        return redirect()->route('login');
+    }
 }
+
+

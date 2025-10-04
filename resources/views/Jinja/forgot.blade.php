@@ -39,7 +39,7 @@
                 Please enter your email and password to log in.
             </p>
 
-            <form class="space-y-6" method="POST" action="{{ route('authenticate') }}" id="loginForm">
+            <form class="space-y-6" method="POST" action="{{ route('password.email') }}" id="loginForm">
                 @csrf
                 
 
@@ -68,7 +68,7 @@
                     id="loginBtn"
                     class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                    Send New Password
+                    Change Password
                 </button>
         <script>
             document.addEventListener('DOMContentLoaded', function() {

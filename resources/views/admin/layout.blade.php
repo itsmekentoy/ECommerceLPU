@@ -8,6 +8,47 @@
             <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
             <p class="text-gray-600 mt-2">Welcome back! Here's what's happening with your business today.</p>
         </div>
+        <!-- Generate Sales Button -->
+            <div class="mb-8 flex justify-end">
+                <button id="openSalesModal" type="button" class="inline-block px-6 py-2 bg-primary text-white font-semibold rounded-lg shadow hover:bg-orange-700 transition">
+                    Generate Sales
+                </button>
+                <!-- Sales Modal -->
+                <div id="salesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+                    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+                        <button id="closeSalesModal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        <h2 class="text-xl font-bold mb-4">Generate Sales Report</h2>
+                        <form method="POST" action="{{ route('admin.printOrderItemsPerCategory') }}">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                <input type="date" id="start_date" name="start_date" class="w-full border rounded px-3 py-2" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                <input type="date" id="end_date" name="end_date" class="w-full border rounded px-3 py-2" required>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-6 py-2 bg-primary text-white font-semibold rounded-lg shadow hover:bg-orange-700 transition">Generate</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <script>
+                    document.getElementById('openSalesModal').addEventListener('click', function() {
+                        document.getElementById('salesModal').classList.remove('hidden');
+                    });
+                    document.getElementById('closeSalesModal').addEventListener('click', function() {
+                        document.getElementById('salesModal').classList.add('hidden');
+                    });
+                    window.addEventListener('click', function(e) {
+                        const modal = document.getElementById('salesModal');
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                        }
+                    });
+                </script>
+            </div>
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -63,6 +104,7 @@
                 </div>
             </div>
         </div>
+            
         <!-- Content Area -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="grid grid-cols-12 gap-6">
@@ -75,13 +117,17 @@
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                             var ctx = document.getElementById('salesChart').getContext('2d');
+                            const chartData = @json($data);
+
+                            const labels = chartData.map(item => item.type_name);
+                            const values = chartData.map(item => item.total_quantity);
                             new Chart(ctx, {
                                 type: 'bar',
                                 data: {
-                                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                                    labels: labels,
                                     datasets: [{
                                         label: 'Sales',
-                                        data: [12000, 15000, 11000, 18000, 17000, 14000, 20000, 16000],
+                                        data: values    ,
                                         backgroundColor: 'rgba(234, 88, 12, 0.7)',
                                         borderRadius: 8,
                                     }]

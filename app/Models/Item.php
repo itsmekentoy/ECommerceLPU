@@ -21,4 +21,8 @@ class Item extends Model
     {
         return $this->belongsTo(ItemType::class);
     }
+
+    public function OrderItem(){
+        return $this->belongTo(OrderDetailItem::class, 'item_id');
+    }
 }
