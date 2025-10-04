@@ -17,7 +17,6 @@ class user_seeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'), // Use a secure password in production
-            'is_admin' => true,
         ]);
     }
 }
