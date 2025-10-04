@@ -348,12 +348,27 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
     <div id="cartTotal" style="display: none;">
         <div style="display: flex; flex-direction: column; align-items: center;">
             <strong>Total:</strong> <span id="totalAmount">₱0.00</span>
-            <button id="checkoutBtn" onclick="checkout()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: #ea580c; color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">
-                Proceed to Checkout
+            <button id="checkoutBtn" onclick="checkout()" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: #ea580c; color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; position:relative;">
+                <span id="checkoutBtnText">Proceed to Checkout</span>
+                <span id="checkoutLoader" style="display:none;position:absolute;left:1rem;top:50%;transform:translateY(-50%);">
+                    <span style="display:inline-block;width:18px;height:18px;border:2px solid #fff;border-top:2px solid #ea580c;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+                </span>
             </button>
+            <style>
+                @keyframes spin { 100% { transform: rotate(360deg); } }
+            </style>
             <script>
                 function checkout() {
-                    window.location.href = "{{ route('item.checkout') }}";
+                    var btn = document.getElementById('checkoutBtn');
+                    var btnText = document.getElementById('checkoutBtnText');
+                    var loader = document.getElementById('checkoutLoader');
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    btnText.style.display = 'none';
+                    loader.style.display = 'inline-block';
+                    setTimeout(function() {
+                        window.location.href = "{{ route('item.checkout') }}";
+                    }, 600); // short delay for loader effect
                 }
             </script>
             <button onclick="closeCart();" style="margin-top:1rem; padding:0.5rem 1.5rem; background:#e5e7eb; color:#374151; border:none; border-radius:0.5rem; font-weight:600; cursor:pointer;">
