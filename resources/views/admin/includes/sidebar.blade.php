@@ -19,6 +19,15 @@
                     Products & Inventory
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.texttile') }}" class="{{ request()->routeIs('admin.texttile') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-primary hover:text-white' }} group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors">
+                    <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                    Texttile
+                </a>
+            </li>
             <!-- Orders -->
             <li>
                 <a href="{{ route('customer.orders') }}" class="{{ request()->routeIs('customer.orders') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-primary hover:text-white' }} group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors">

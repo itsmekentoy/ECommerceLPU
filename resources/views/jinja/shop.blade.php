@@ -25,13 +25,13 @@
                         {{ $itemType->type_name }}
                     </button>
                 @endforeach
-                {{-- <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                        onclick="showCustomizeModal()">
+                <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded"
+                        >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                     </svg>
                     Add Customize Product
-                </button> --}}
+                </button>
             </div>
 
             <!-- Products Grid -->

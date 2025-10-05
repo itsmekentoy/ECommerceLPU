@@ -6,114 +6,117 @@
         <!-- Page Header -->
         <div class="mb-8 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Products & Inventory</h1>
-                <p class="text-gray-600 mt-2">Manage your product catalog and inventory levels.</p>
+                <h1 class="text-3xl font-bold text-gray-900">Texttile Management</h1>
+                <p class="text-gray-600 mt-2">Manage texttiles and their applicable item types.</p>
             </div>
             <button onclick="openAddModal()" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                Add New Product
+                Add Texttile
             </button>
         </div>
 
-        <!-- Products Table -->
-         <table class="w-full" id="productsTable">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Type</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Stock</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($items as $item)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($item->file_path)
-                                <img src="{{ asset('storage/products/' . $item->file_path) }}" 
-                                    alt="{{ $item->item_name }}" 
-                                    class="w-16 h-16 object-cover">
-                            @else
-                                <span class="text-gray-500">No Image</span>
-                            @endif
-                        </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{$item->itemType->type_name}}</span>
-                            </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$item->item_name}}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            @php
-                                if ($item->stock > 10) {
-                                    $badgeColor = 'bg-green-100 text-green-800';
-                                } elseif ($item->stock > 0) {
-                                    $badgeColor = 'bg-yellow-100 text-yellow-800';
-                                } else {
-                                    $badgeColor = 'bg-red-100 text-red-800';
-                                }
-                            @endphp
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeColor }}">
-                                {{ $item->stock }} units
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₱ {{$item->price}}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                            <button onclick="openUpdateModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', '{{ addslashes($item->description) }}', {{$item->stock}}, {{$item->price}}, {{$item->item_type_id}}, '{{ addslashes($item->file_path ?? '') }}', {{$item->is_featured}})" class="text-primary hover:text-primary/80 transition-colors">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                                Update
-                            </button>
-                            <button onclick="openDeleteModal({{ $item->id }})" class="text-red-600 hover:text-red-800 transition-colors">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-                <!-- Sample Product Rows -->
-            </tbody>
-        </table>
+        <!-- Texttiles Table -->
+          <table class="w-full" id="productsTable">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Texttile Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied to Categories</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($texttiles as $texttile)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($texttile->file_path)
+                                        <img src="{{ asset('storage/texttiles/' . $texttile->file_path) }}" 
+                                            alt="{{ $texttile->title }}" 
+                                            class="w-16 h-16 object-cover rounded-lg shadow-sm">
+                                    @else
+                                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <span class="text-gray-400 text-xs">No Image</span>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ $texttile->title }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-wrap gap-2">
+                                        @php
+                                            $colors = [
+                                                'bg-blue-100 text-blue-800',
+                                                'bg-green-100 text-green-800',
+                                                'bg-purple-100 text-purple-800',
+                                                'bg-pink-100 text-pink-800',
+                                                'bg-yellow-100 text-yellow-800',
+                                                'bg-indigo-100 text-indigo-800',
+                                                'bg-red-100 text-red-800',
+                                                'bg-orange-100 text-orange-800',
+                                            ];
+                                        @endphp
+                                        @forelse($texttile->appliedTo as $index => $applied)
+                                            @php
+                                                $colorClass = $colors[$index % count($colors)];
+                                            @endphp
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $colorClass }}">
+                                                {{ $applied->category->type_name }}
+                                            </span>
+                                        @empty
+                                            <span class="text-gray-400 text-sm">No categories assigned</span>
+                                        @endforelse
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick="openUpdateModal({{ $texttile->id }}, '{{ addslashes($texttile->title) }}', {{ $texttile->price ?? 0 }}, '{{ addslashes($texttile->file_path ?? '') }}', {{ json_encode($texttile->appliedTo->pluck('category_id')->toArray()) }})" class="text-primary hover:text-primary/80 transition-colors">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        Update
+                                    </button>
+                                    <button onclick="openDeleteModal({{ $texttile->id }})" class="text-red-600 hover:text-red-800 transition-colors">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            
             <div class="overflow-x-auto">
-                
+               
             </div>
         </div>
     </div>
 </div>
 
-<!-- Add/Update Product Modal -->
+<!-- Add/Update Texttile Modal -->
 <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Add New Product</h3>
+            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Add New Texttile</h3>
         </div>
-        <form class="px-6 py-4 space-y-4" action="{{route('admin.add.item')}}" method="POST" enctype="multipart/form-data">
+        <form class="px-6 py-4 space-y-4" action="{{route('admin.texttile.create')}}" method="POST" enctype="multipart/form-data">
             @csrf
+            
+            <!-- Texttile Name -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Type</label>
-                <select id="productType" name="product_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                    <option value="">Select Type</option>
-                    @foreach($itemTypes as $type)
-                    <option value="{{$type->id}}">{{$type->type_name}}</option>
-                    @endforeach
-                </select>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Texttile Name</label>
+                <input type="text" id="productName" name="texttile_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter texttile name" required>
             </div>
+            
+            <!-- Additional Price -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                <input type="text" id="productName" name="product_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter product name">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Description</label>
-                <textarea id="productDescription" name="product_description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter product description"></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Additional Price (₱)</label>
+                <input type="number" id="texttilePrice" name="texttile_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter additional price" required>
             </div>
             
             <!-- Image Upload Section -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Texttile Image</label>
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                     <div class="space-y-1 text-center">
                         <div id="imagePreviewContainer" class="hidden mb-4">
@@ -128,7 +131,7 @@
                             <div class="flex text-sm text-gray-600">
                                 <label for="productImage" class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary/80">
                                     <span>Upload a file</span>
-                                    <input id="productImage" name="product_image" type="file" accept="image/*" class="sr-only">
+                                    <input id="productImage" name="texttile_image" type="file" accept="image/*" class="sr-only">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
@@ -138,25 +141,29 @@
                 </div>
             </div>
             
+            <!-- Item Types Checkboxes -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
-                <input type="number" id="productStock" name="stock_quantity" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter stock quantity">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Price (₱)</label>
-                <input type="number" id="productPrice" name="price" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter price">
-            </div>
-            
-            <div>
-                <label class="inline-flex items-center">
-                    <input type="checkbox" id="productFeatured" name="is_featured" value="1" class="mr-2">
-                    <span class="text-sm text-gray-700">Mark as Featured</span>
-                </label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Applied to Item Types</label>
+                <div class="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-md p-3">
+                    @foreach($itemTypes as $type)
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                               id="itemType{{ $type->id }}" 
+                               name="item_types[]" 
+                               value="{{ $type->id }}" 
+                               class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                        <label for="itemType{{ $type->id }}" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                            {{ $type->type_name }}
+                        </label>
+                    </div>
+                    @endforeach
+                </div>
+                <p class="mt-1 text-xs text-gray-500">Select which item types this texttile can be applied to</p>
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
                 <button type="button" onclick="closeProductModal()" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">Cancel</button>
-                <button type="button" id="saveProductBtn" onclick="saveProductAjax(event)" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">Save Product</button>
+                <button type="button" id="saveProductBtn" onclick="saveProductAjax(event)" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md transition-colors">Save Texttile</button>
             </div>
         </form>
     </div>
@@ -293,8 +300,8 @@ function closeProductModal() {
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Delete Product</h3>
-                        <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete this product? This action cannot be undone.</p>
+                        <h3 class="text-lg font-semibold text-gray-900">Delete Texttile</h3>
+                        <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete this texttile? This action cannot be undone.</p>
                     </div>
                 </div>
             </div>
@@ -310,7 +317,7 @@ let currentProductId = null;
 let isEditMode = false;
 
 function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Add New Product';
+    document.getElementById('modalTitle').textContent = 'Add New Texttile';
     document.getElementById('productModal').classList.remove('hidden');
     document.getElementById('productModal').classList.add('flex');
     isEditMode = false;
@@ -320,23 +327,41 @@ function openAddModal() {
     document.getElementById('currentImageFilename').textContent = '';
     document.getElementById('imagePreviewContainer').classList.add('hidden');
     document.getElementById('uploadPrompt').classList.remove('hidden');
+    // Change button text back to Save
+    var btn = document.getElementById('saveProductBtn');
+    btn.textContent = 'Save Texttile';
+    btn.onclick = function(e) { saveProductAjax(e); };
 }
 
-// Accept filePath as an extra argument
-function openUpdateModal(productId, name, description, stock, price, typeId, filePath, isFeatured) {
-    document.getElementById('modalTitle').textContent = 'Update Product';
+// Accept filePath, selectedItemTypes, and price as arguments
+function openUpdateModal(texttileId, name, price, filePath, selectedItemTypes) {
+    document.getElementById('modalTitle').textContent = 'Update Texttile';
     document.getElementById('productModal').classList.remove('hidden');
     document.getElementById('productModal').classList.add('flex');
-    currentProductId = productId;
+    currentProductId = texttileId;
     isEditMode = true;
-    // Populate fields
+    
+    // Populate name field
     document.getElementById('productName').value = name;
-    document.getElementById('productDescription').value = description;
-    document.getElementById('productStock').value = stock;
-    document.getElementById('productPrice').value = price;
-    document.getElementById('productType').value = typeId;
-    document.getElementById('productFeatured').checked = isFeatured ? true : false;
+    
+    // Populate price field
+    document.getElementById('texttilePrice').value = price;
 
+    // Uncheck all checkboxes first
+    var checkboxes = document.querySelectorAll('input[name="item_types[]"]');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.checked = false;
+    });
+
+    // Check the selected item types
+    if (selectedItemTypes && Array.isArray(selectedItemTypes)) {
+        selectedItemTypes.forEach(function(typeId) {
+            var checkbox = document.getElementById('itemType' + typeId);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+    }
 
     // Show current image filename and preview if filePath is provided
     var filenameDiv = document.getElementById('currentImageFilename');
@@ -348,8 +373,8 @@ function openUpdateModal(productId, name, description, stock, price, typeId, fil
         var filename = filePath.split('/').pop();
         filenameDiv.textContent = 'Current image: ' + filename;
         filenameDiv.classList.remove('hidden');
-        // Set preview if image exists (prepend products/ if not already present)
-        var previewPath = filePath.startsWith('products/') ? filePath : 'products/' + filePath;
+        // Set preview if image exists
+        var previewPath = filePath.startsWith('texttiles/') ? filePath : 'texttiles/' + filePath;
         imagePreview.src = '/storage/' + previewPath;
         imagePreviewContainer.classList.remove('hidden');
         uploadPrompt.classList.add('hidden');
@@ -362,7 +387,7 @@ function openUpdateModal(productId, name, description, stock, price, typeId, fil
 
     // Change button to Update
     var btn = document.getElementById('saveProductBtn');
-    btn.textContent = 'Update Product';
+    btn.textContent = 'Update Texttile';
     btn.onclick = updateProductAjax;
 }
 
@@ -371,7 +396,7 @@ function updateProductAjax(e) {
     btn.disabled = true;
     btn.textContent = 'Updating...';
     var form = e.target.closest('form');
-    var url = '/admin/' + currentProductId + '/updateItem';
+    var url = '/admin/texttile/' + currentProductId + '/update';
     var formData = new FormData(form);
     formData.append('id', currentProductId);
     fetch(url, {
@@ -391,13 +416,13 @@ function closeProductModal() {
     clearForm();
 }
 
-function openDeleteModal(productId) {
-    currentProductId = productId;
-    // Set the form action to the correct route for deleting an item using Laravel's route helper
+function openDeleteModal(texttileId) {
+    currentProductId = texttileId;
+    // Set the form action to the correct route for deleting a texttile using Laravel's route helper
     var form = document.getElementById('deleteProductForm');
-    // Use a placeholder in the route and replace it with the productId
-    var routeTemplate = "{{ route('admin.delete.item', [':id']) }}";
-    form.action = routeTemplate.replace(':id', productId);
+    // Use a placeholder in the route and replace it with the texttileId
+    var routeTemplate = "{{ route('admin.texttile.delete', [':id']) }}";
+    form.action = routeTemplate.replace(':id', texttileId);
     document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteModal').classList.add('flex');
 }
@@ -433,9 +458,9 @@ function confirmDelete() {
     // Get CSRF token from meta or form
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || document.querySelector('#deleteProductForm input[name="_token"]').value;
     // Build the delete URL using Laravel route helper
-    var productId = currentProductId;
-    var routeTemplate = "{{ route('admin.delete.item', [':id']) }}";
-    var url = routeTemplate.replace(':id', productId);
+    var texttileId = currentProductId;
+    var routeTemplate = "{{ route('admin.texttile.delete', [':id']) }}";
+    var url = routeTemplate.replace(':id', texttileId);
     fetch(url, {
         method: 'DELETE',
         headers: {
@@ -448,12 +473,16 @@ function confirmDelete() {
 }
 
 function clearForm() {
-    document.getElementById('productType').value = '';
     document.getElementById('productName').value = '';
-    document.getElementById('productStock').value = '';
-    document.getElementById('productPrice').value = '';
-    document.getElementById('productDescription').value = '';
+    document.getElementById('texttilePrice').value = '';
     document.getElementById('productImage').value = '';
+    
+    // Uncheck all item type checkboxes
+    var checkboxes = document.querySelectorAll('input[name="item_types[]"]');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.checked = false;
+    });
+    
     // Hide filename and preview
     document.getElementById('currentImageFilename').classList.add('hidden');
     document.getElementById('currentImageFilename').textContent = '';
