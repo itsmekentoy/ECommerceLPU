@@ -11,12 +11,12 @@ class LandinPageController extends Controller
     {
         $featuredItems = Item::where('is_featured', true)->get();
 
-        return view('jinja.home', compact('featuredItems'));
+        return view('homepage.home', compact('featuredItems'));
     }
 
     public function about()
     {
-        return view('jinja.about');
+        return view('homepage.about');
     }
 
     public function shop()
@@ -24,12 +24,12 @@ class LandinPageController extends Controller
         $items = ItemType::with('items')->get();
         $itemTypes = ItemType::all();
 
-        return view('jinja.shop', compact('items', 'itemTypes'));
+        return view('homepage.shop', compact('items', 'itemTypes'));
     }
 
     public function contact()
     {
-        return view('jinja.contact');
+        return view('homepage.contact');
     }
 
     
