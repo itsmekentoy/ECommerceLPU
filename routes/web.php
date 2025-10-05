@@ -28,10 +28,10 @@ Route::controller(CustomerAuthentication::class)->group(function () {
 });
 
 Route::controller(LandinPageController::class)->group(function () {
-    Route::get('/landing/home', 'home')->name('home');
-    Route::get('/landing/about', 'about')->name('about');
-    Route::get('/landing/shop', 'shop')->name('shop');
-    Route::get('/landing/contact', 'contact')->name('contact');
+    Route::get('/', 'home')->name('home');
+    Route::get('/about', 'about')->name('about');
+    Route::get('/shop', 'shop')->name('shop');
+    Route::get('/contact', 'contact')->name('contact');
 
 });
 
