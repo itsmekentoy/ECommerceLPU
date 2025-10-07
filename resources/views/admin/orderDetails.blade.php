@@ -123,9 +123,20 @@
                                 <tr>
                                     <td class="py-4">
                                         <div class="flex items-start">
-                                            
                                             <div>
                                                 <div class="font-medium text-gray-900">{{ $item['product_name'] }}</div>
+                                                @if(isset($item['customization_textile_id']) && $item['customization_textile_id'] > 0 && isset($item['textile_name']))
+                                                    <div class="mt-2 pl-3 border-l-3 border-orange-400">
+                                                        <div class="text-xs text-gray-600">
+                                                            <span class="font-semibold">Textile:</span> {{ $item['textile_name'] }}
+                                                        </div>
+                                                        @if(isset($item['textile_price']) && $item['textile_price'] > 0)
+                                                            <div class="text-xs text-gray-500 mt-1">
+                                                                Textile Fee: ₱{{ number_format($item['textile_price'], 2) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>

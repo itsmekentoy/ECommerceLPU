@@ -167,6 +167,7 @@
         if (!currentProductId) return;
 
         const quantity = parseInt(document.getElementById('modalQuantity').value);
+        const productName = document.getElementById('modalProductName').textContent;
         
         // Call the existing addToCart function with quantity
         fetch("{{ route('add.to.cart') }}", {
@@ -179,17 +180,88 @@
         })
         .then((res) => res.json())
         .then((data) => {
-            // Close modal
-            closeAddToCartModal();
-            
-            // Reload cart
-            if (typeof loadCart === 'function') {
-                loadCart();
+            if (data.success) {
+                // Close modal
+                closeAddToCartModal();
+                
+                // Reload cart
+                if (typeof loadCart === 'function') {
+                    loadCart();
+                }
+                
+                // Show success toast
+                showSuccessToast(`${productName} added to cart!`);
+            } else {
+                alert(data.error || 'Failed to add item to cart.');
             }
         })
         .catch((error) => {
             console.error('Error adding to cart:', error);
+            alert('An error occurred while adding to cart.');
         });
+    }
+
+    // Simple toast notification function
+    function showSuccessToast(message) {
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        if (!document.getElementById('toast-animations')) {
+            style.id = 'toast-animations';
+            document.head.appendChild(style);
+        }
+        
+        // Add to page
+        document.body.appendChild(toast);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    document.body.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
     }
 
     function buyNow() {

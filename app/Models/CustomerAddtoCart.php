@@ -12,6 +12,8 @@ class CustomerAddtoCart extends Model
         'customer_id',
         'item_id',
         'quantity',
+        'customization',
+        'price'
     ];
 
     public function customer()
@@ -22,5 +24,10 @@ class CustomerAddtoCart extends Model
     public function item()
     {
         return $this->belongsTo(Item::class, 'item_id');
+    }
+
+    public function textile()
+    {
+        return $this->belongsTo(TextTile::class, 'customization');
     }
 }

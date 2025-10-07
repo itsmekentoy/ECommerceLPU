@@ -39,6 +39,7 @@ Route::get('/cart/items', [AddtoCart::class, 'fetchCartItems'])->name('cart.item
 Route::post('/cart/add', [AddtoCart::class, 'addtoCart'])->name('add.to.cart');
 Route::post('/cart/update', [AddtoCart::class, 'updateCartItem'])->name('update.cart.item');
 Route::delete('/cart/remove', [AddtoCart::class, 'removeItemFromCart'])->name('remove.cart.item');
+Route::get('/api/items-by-category/{categoryId}', [LandinPageController::class, 'getItemsByCategory'])->name('items.by.category');
 Route::get('/item/checkout', [CustomerOrder::class, 'checkout'])->name('item.checkout');
 Route::get('/item/direct-checkout', [CustomerOrder::class, 'directCheckout'])->name('item.direct.checkout');
 Route::post('/order/place', [CustomerOrder::class, 'placeOrder'])->name('order.place');

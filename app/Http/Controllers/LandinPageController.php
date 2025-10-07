@@ -23,8 +23,9 @@ class LandinPageController extends Controller
     {
         $items = ItemType::with('items')->get();
         $itemTypes = ItemType::all();
+        $textiles = \App\Models\TextTile::with('appliedTo.category')->get();
 
-        return view('jinja.shop', compact('items', 'itemTypes'));
+        return view('jinja.shop', compact('items', 'itemTypes', 'textiles'));
     }
 
     public function contact()
@@ -32,5 +33,12 @@ class LandinPageController extends Controller
         return view('jinja.contact');
     }
 
-    
+    public function getItemsByCategory($categoryId)
+    {
+        $items = Item::where('item_type_id', $categoryId)
+                    ->where('stock', '>', 0)
+                    ->get();
+        
+        return response()->json(['items' => $items]);
+    }
 }

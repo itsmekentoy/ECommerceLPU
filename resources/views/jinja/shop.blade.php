@@ -26,7 +26,7 @@
                     </button>
                 @endforeach
                 <button class="tab-btn custom-tab flex items-center gap-1 px-4 py-2 bg-green-500 text-white rounded"
-                        >
+                        onclick="openCustomizeModal()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
                     </svg>
@@ -67,6 +67,59 @@
     </section>
 </main>
 
+<!-- Customize Product Modal -->
+<div class="modal-overlay" id="customizeModal" style="display: none;">
+    <div class="customize-modal">
+        <div class="modal-header">
+            <h3>Customize Your Product</h3>
+            <button class="close-modal" onclick="closeCustomizeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Step 1: Select Textile -->
+            <div id="step1" class="customize-step">
+                <h4 class="step-title">Step 1: Select Textile</h4>
+                <div class="textile-grid">
+                    @foreach($textiles as $textile)
+                    <div class="textile-card" onclick="selectTextile({{ $textile->id }}, '{{ $textile->title }}', {{ $textile->price }}, '{{ $textile->file_path }}')">
+                        <img src="{{ asset('storage/texttiles/' . $textile->file_path) }}" alt="{{ $textile->title }}" class="textile-image">
+                        <div class="textile-info">
+                            <h5>{{ $textile->title }}</h5>
+                            <p class="textile-price">₱{{ number_format($textile->price, 2) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Step 2: Select Category -->
+            <div id="step2" class="customize-step" style="display: none;">
+                <button class="btn-back" onclick="backToStep(1)">← Back</button>
+                <h4 class="step-title">Step 2: Select Product Category</h4>
+                <p class="selected-info">Selected Textile: <strong id="selectedTextileName"></strong> (₱<span id="selectedTextilePrice"></span>)</p>
+                <div class="category-dropdown">
+                    <label for="categorySelect">Choose Category:</label>
+                    <select id="categorySelect" onchange="selectCategory()" class="form-select">
+                        <option value="">-- Select a Category --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Step 3: Select Product -->
+            <div id="step3" class="customize-step" style="display: none;">
+                <button class="btn-back" onclick="backToStep(2)">← Back</button>
+                <h4 class="step-title">Step 3: Select Product</h4>
+                <p class="selected-info">
+                    Textile: <strong id="selectedTextileName2"></strong> (₱<span id="selectedTextilePrice2"></span>) | 
+                    Category: <strong id="selectedCategoryName"></strong>
+                </p>
+                <div class="products-grid-custom" id="customProductsGrid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add to Cart Modal -->
 <div class="modal-overlay" id="addToCartModal">
     <div class="add-to-cart-modal">
@@ -105,3 +158,423 @@
 @include('jinja.includes.cart')
 @include('jinja.includes.footer')
 @include('jinja.includes.scripts')
+
+<script>
+// Customization data
+let selectedTextileId = null;
+let selectedTextileData = {};
+let selectedCategoryId = null;
+let selectedCategoryName = '';
+let textilesData = @json($textiles);
+
+function openCustomizeModal() {
+    document.getElementById('customizeModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    // Reset to step 1
+    showStep(1);
+}
+
+function closeCustomizeModal() {
+    document.getElementById('customizeModal').style.display = 'none';
+    document.body.style.overflow = '';
+    // Reset selections
+    selectedTextileId = null;
+    selectedTextileData = {};
+    selectedCategoryId = null;
+    selectedCategoryName = '';
+}
+
+function showStep(stepNumber) {
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step' + stepNumber).style.display = 'block';
+}
+
+function backToStep(stepNumber) {
+    showStep(stepNumber);
+}
+
+function selectTextile(textileId, textileName, textilePrice, textileImage) {
+    selectedTextileId = textileId;
+    selectedTextileData = {
+        id: textileId,
+        name: textileName,
+        price: textilePrice,
+        image: textileImage
+    };
+
+    console.log('Selected Textile:', selectedTextileData);
+
+    // Update step 2 info
+    document.getElementById('selectedTextileName').textContent = textileName;
+    document.getElementById('selectedTextilePrice').textContent = textilePrice.toFixed(2);
+
+    // Find categories for this textile
+    const textile = textilesData.find(t => t.id === textileId);
+    const categorySelect = document.getElementById('categorySelect');
+    categorySelect.innerHTML = '<option value="">-- Select a Category --</option>';
+
+    if (textile && textile.applied_to && textile.applied_to.length > 0) {
+        textile.applied_to.forEach(appliedTo => {
+            if (appliedTo.category) {
+                const option = document.createElement('option');
+                option.value = appliedTo.category.id;
+                option.textContent = appliedTo.category.type_name;
+                categorySelect.appendChild(option);
+            }
+        });
+    }
+
+    // Move to step 2
+    showStep(2);
+}
+
+function selectCategory() {
+    const categorySelect = document.getElementById('categorySelect');
+    selectedCategoryId = categorySelect.value;
+    selectedCategoryName = categorySelect.options[categorySelect.selectedIndex].text;
+
+    if (!selectedCategoryId) return;
+
+    console.log('Selected Category:', selectedCategoryId, selectedCategoryName);
+
+    // Update step 3 info
+    document.getElementById('selectedTextileName2').textContent = selectedTextileData.name;
+    document.getElementById('selectedTextilePrice2').textContent = selectedTextileData.price.toFixed(2);
+    document.getElementById('selectedCategoryName').textContent = selectedCategoryName;
+
+    // Load products for this category
+    loadProductsByCategory(selectedCategoryId);
+
+    // Move to step 3
+    showStep(3);
+}
+
+function loadProductsByCategory(categoryId) {
+    const productsGrid = document.getElementById('customProductsGrid');
+    productsGrid.innerHTML = '<p style="text-align: center; padding: 2rem;">Loading products...</p>';
+
+    // Fetch products
+    fetch(`/api/items-by-category/${categoryId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.items && data.items.length > 0) {
+                let html = '';
+                data.items.forEach(item => {
+                    const itemPrice = parseFloat(item.price);
+                    const textilePrice = parseFloat(selectedTextileData.price);
+                    const totalPrice = itemPrice + textilePrice;
+                    
+                    // Escape single quotes in item name
+                    const escapedItemName = item.item_name.replace(/'/g, "\\'");
+                    
+                    html += `
+                        <div class="product-card-custom">
+                            <img src="/storage/products/${item.file_path}" alt="${item.item_name}" class="product-image-custom">
+                            <div class="product-info-custom">
+                                <h5>${item.item_name}</h5>
+                                <div class="price-breakdown">
+                                    <p class="product-price-detail">Item: ₱${itemPrice.toFixed(2)}</p>
+                                    <p class="product-price-detail">Textile: ₱${textilePrice.toFixed(2)}</p>
+                                    <p class="product-price-custom">Total: ₱${totalPrice.toFixed(2)}</p>
+                                </div>
+                                <p class="product-stock-custom">Stock: ${item.stock}</p>
+                                <button class="btn-select-product" onclick="addCustomizedToCart(${item.id}, '${escapedItemName}', ${item.price}, ${totalPrice})" 
+                                    ${item.stock <= 0 ? 'disabled' : ''}>
+                                    ${item.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                productsGrid.innerHTML = html;
+            } else {
+                productsGrid.innerHTML = '<p style="text-align: center; padding: 2rem; color: #999;">No products found in this category.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+            productsGrid.innerHTML = '<p style="text-align: center; padding: 2rem; color: red;">Error loading products.</p>';
+        });
+}
+
+function addCustomizedToCart(productId, productName, productPrice, totalPrice) {
+    // Check if customer is logged in
+    const isLoggedIn = {{ $currentCustomer ? 'true' : 'false' }};
+    
+    if (!isLoggedIn) {
+        alert('Please log in to add items to your cart.');
+        return;
+    }
+
+    console.log('Adding to cart:', {
+        productId,
+        productName,
+        productPrice,
+        totalPrice,
+        textileId: selectedTextileData.id,
+        textileName: selectedTextileData.name
+    });
+
+    // Add to cart via API with customization
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            item_id: productId,
+            quantity: 1,
+            customization: selectedTextileData.id, // textile_id
+            price: totalPrice // total price (item + textile)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response:', data);
+        if (data.success) {
+            // Close modal
+            closeCustomizeModal();
+            
+            // Refresh cart display
+            if (typeof loadCart === 'function') {
+                loadCart();
+            }
+            
+            // Optional: Show a subtle success notification (non-blocking)
+            showSuccessToast('Customized product added to cart!');
+        } else {
+            alert(data.error || 'Failed to add item to cart.');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred while adding to cart.');
+    });
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('customizeModal');
+    if (modal && event.target === modal) {
+        closeCustomizeModal();
+    }
+});
+</script>
+
+<style>
+/* Customize Modal Styles */
+.customize-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.customize-step {
+    padding: 1rem 0;
+}
+
+.step-title {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #c17854;
+}
+
+.selected-info {
+    background: #f0f8ff;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.btn-back {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.btn-back:hover {
+    background: #5a6268;
+}
+
+/* Textile Grid */
+.textile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.textile-card {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.textile-card:hover {
+    border-color: #c17854;
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(193, 120, 84, 0.3);
+}
+
+.textile-image {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.4rem;
+}
+
+.textile-info h5 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.textile-price {
+    color: #c17854;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Category Dropdown */
+.category-dropdown {
+    margin: 1.5rem 0;
+}
+
+.category-dropdown label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #c17854;
+}
+
+/* Products Grid Custom */
+.products-grid-custom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+}
+
+.product-card-custom {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.product-card-custom:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image-custom {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.product-info-custom h5 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.price-breakdown {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+}
+
+.product-price-detail {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+.product-price-custom {
+    color: #c17854;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid #ddd;
+}
+
+.product-stock-custom {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.btn-select-product {
+    width: 100%;
+    padding: 0.75rem;
+    background: #c17854;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-select-product:hover:not(:disabled) {
+    background: #a66545;
+    transform: translateY(-2px);
+}
+
+.btn-select-product:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .customize-modal {
+        width: 98%;
+        max-height: 95vh;
+    }
+
+    .textile-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .products-grid-custom {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

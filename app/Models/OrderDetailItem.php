@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetailItem extends Model
 {
-    protected $fillable = ['order_detail_id', 'item_id', 'quantity', 'price'];
+    protected $fillable = ['order_detail_id', 'item_id', 'quantity', 'price','customization_textile_id'];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -23,5 +23,10 @@ class OrderDetailItem extends Model
     public function item()
     {
         return $this->belongsTo(Item::class, 'item_id');
+    }
+
+    public function textile()
+    {
+        return $this->belongsTo(TextTile::class, 'customization_textile_id');
     }
 }

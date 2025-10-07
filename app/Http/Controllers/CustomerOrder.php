@@ -107,6 +107,7 @@ class CustomerOrder extends Controller
                 'item_id' => $cartItem->item_id,
                 'quantity' => $cartItem->quantity,
                 'price' => $cartItem->item->price,
+                'customization_textile_id' => $cartItem->customization,
             ]);
 
         }
@@ -274,7 +275,7 @@ class CustomerOrder extends Controller
 
     public function viewOrder($id)
     {
-        $order = OrderDetails::with(['customer', 'items.item'])->find($id);
+        $order = OrderDetails::with(['customer', 'items.item', 'items.textile'])->find($id);
 
         if (! $order) {
             return response()->json(['error' => 'Order not found'], 404);
@@ -287,6 +288,9 @@ class CustomerOrder extends Controller
                 'product_image' => $item->item->file_path ?? 'default.png',
                 'quantity' => $item->quantity,
                 'price' => $item->price,
+                'customization_textile_id' => $item->customization_textile_id,
+                'textile_name' => $item->textile ? $item->textile->title : null,
+                'textile_price' => $item->textile ? $item->textile->price : 0,
             ];
         });
 
