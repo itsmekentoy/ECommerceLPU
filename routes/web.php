@@ -45,10 +45,10 @@ Route::get('/customer/order/{id}', [CustomerOrder::class, 'viewOrder'])->name('c
 Route::post('updateOrderStatus/', [CustomerOrder::class, 'updateOrderStatus'])->name('admin.update.order.status');
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/dashboard', 'index')->name('admin.index')->middleware('auth:admin');
-    Route::get('texttile', 'texttile')->name('admin.texttile');
-    Route::post('/admin/texttile/create', 'createTexttile')->name('admin.texttile.create')->middleware('auth:admin');
-    Route::post('/admin/texttile/{id}/update', 'updateTexttile')->name('admin.texttile.update')->middleware('auth:admin');
-    Route::delete('/admin/texttile/{id}/delete', 'deleteTexttile')->name('admin.texttile.delete')->middleware('auth:admin');
+    Route::get('textile', 'texttile')->name('admin.texttile');
+    Route::post('/admin/textile/create', 'createTexttile')->name('admin.texttile.create')->middleware('auth:admin');
+    Route::post('/admin/textile/{id}/update', 'updateTexttile')->name('admin.texttile.update')->middleware('auth:admin');
+    Route::delete('/admin/textile/{id}/delete', 'deleteTexttile')->name('admin.texttile.delete')->middleware('auth:admin');
     Route::get('/admin/users', 'users')->name('admin.users');
     Route::post('/admin/printOrderItemsPerCategory', 'printOrderItemsPerCategory')->name('admin.printOrderItemsPerCategory');
 });

@@ -6,11 +6,11 @@
         <!-- Page Header -->
         <div class="mb-8 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Texttile Management</h1>
-                <p class="text-gray-600 mt-2">Manage texttiles and their applicable item types.</p>
+                <h1 class="text-3xl font-bold text-gray-900">Textile Management</h1>
+                <p class="text-gray-600 mt-2">Manage textiles and their applicable item types.</p>
             </div>
             <button onclick="openAddModal()" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                Add Texttile
+                Add Textile
             </button>
         </div>
 
@@ -19,7 +19,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Texttile Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Textile Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied to Categories</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -97,14 +97,14 @@
 <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Add New Texttile</h3>
+            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Add New Textile</h3>
         </div>
         <form class="px-6 py-4 space-y-4" action="{{route('admin.texttile.create')}}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <!-- Texttile Name -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Texttile Name</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Textile Name</label>
                 <input type="text" id="productName" name="texttile_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter texttile name" required>
             </div>
             
@@ -116,7 +116,7 @@
             
             <!-- Image Upload Section -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Texttile Image</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Textile Image</label>
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                     <div class="space-y-1 text-center">
                         <div id="imagePreviewContainer" class="hidden mb-4">
@@ -158,7 +158,7 @@
                     </div>
                     @endforeach
                 </div>
-                <p class="mt-1 text-xs text-gray-500">Select which item types this texttile can be applied to</p>
+                <p class="mt-1 text-xs text-gray-500">Select which item types this textile can be applied to</p>
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
@@ -300,8 +300,8 @@ function closeProductModal() {
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Delete Texttile</h3>
-                        <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete this texttile? This action cannot be undone.</p>
+                        <h3 class="text-lg font-semibold text-gray-900">Delete Textile</h3>
+                        <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete this textile? This action cannot be undone.</p>
                     </div>
                 </div>
             </div>
@@ -317,7 +317,7 @@ let currentProductId = null;
 let isEditMode = false;
 
 function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Add New Texttile';
+    document.getElementById('modalTitle').textContent = 'Add New Textile';
     document.getElementById('productModal').classList.remove('hidden');
     document.getElementById('productModal').classList.add('flex');
     isEditMode = false;
@@ -329,13 +329,13 @@ function openAddModal() {
     document.getElementById('uploadPrompt').classList.remove('hidden');
     // Change button text back to Save
     var btn = document.getElementById('saveProductBtn');
-    btn.textContent = 'Save Texttile';
+    btn.textContent = 'Save Textile';
     btn.onclick = function(e) { saveProductAjax(e); };
 }
 
 // Accept filePath, selectedItemTypes, and price as arguments
 function openUpdateModal(texttileId, name, price, filePath, selectedItemTypes) {
-    document.getElementById('modalTitle').textContent = 'Update Texttile';
+    document.getElementById('modalTitle').textContent = 'Update Textile';
     document.getElementById('productModal').classList.remove('hidden');
     document.getElementById('productModal').classList.add('flex');
     currentProductId = texttileId;
@@ -387,7 +387,7 @@ function openUpdateModal(texttileId, name, price, filePath, selectedItemTypes) {
 
     // Change button to Update
     var btn = document.getElementById('saveProductBtn');
-    btn.textContent = 'Update Texttile';
+    btn.textContent = 'Update Textile';
     btn.onclick = updateProductAjax;
 }
 
