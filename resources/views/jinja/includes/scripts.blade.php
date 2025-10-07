@@ -55,4 +55,197 @@
             }
         });
     }
+
+    // Add to Cart Modal functionality
+    let currentProductId = null;
+    let currentMaxStock = 0;
+
+    function openAddToCartModal(productId, productName, productPrice, productImage, stock) {
+        console.log('Opening modal for product:', productId, productName);
+        currentProductId = productId;
+        currentMaxStock = stock;
+
+        // Get modal element
+        const modal = document.getElementById('addToCartModal');
+        console.log('Modal element:', modal);
+
+        // Set product details in modal
+        document.getElementById('modalProductName').textContent = productName;
+        document.getElementById('modalProductPrice').textContent = '₱' + parseFloat(productPrice).toFixed(2);
+        document.getElementById('modalProductImage').src = '/storage/products/' + productImage;
+        document.getElementById('modalProductStock').textContent = stock;
+        document.getElementById('modalQuantity').value = 1;
+        document.getElementById('modalQuantity').max = stock;
+
+        // Check if out of stock
+        const stockText = document.getElementById('modalStockText');
+        const unavailableText = document.getElementById('modalUnavailable');
+        const quantityControl = document.getElementById('modalQuantityControl');
+        const decreaseBtn = document.getElementById('decreaseBtn');
+        const increaseBtn = document.getElementById('increaseBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const addToCartBtn = document.getElementById('addToCartBtn');
+
+        if (stock <= 0) {
+            // Show unavailable, hide stock
+            if (stockText) stockText.style.display = 'none';
+            if (unavailableText) unavailableText.style.display = 'block';
+            
+            // Disable quantity controls
+            if (quantityControl) quantityControl.style.opacity = '0.5';
+            if (decreaseBtn) decreaseBtn.disabled = true;
+            if (increaseBtn) increaseBtn.disabled = true;
+            
+            // Disable buttons
+            if (checkoutBtn) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.style.opacity = '0.5';
+                checkoutBtn.style.cursor = 'not-allowed';
+            }
+            if (addToCartBtn) {
+                addToCartBtn.disabled = true;
+                addToCartBtn.style.opacity = '0.5';
+                addToCartBtn.style.cursor = 'not-allowed';
+            }
+        } else {
+            // Show stock, hide unavailable
+            if (stockText) stockText.style.display = 'block';
+            if (unavailableText) unavailableText.style.display = 'none';
+            
+            // Enable quantity controls
+            if (quantityControl) quantityControl.style.opacity = '1';
+            if (decreaseBtn) decreaseBtn.disabled = false;
+            if (increaseBtn) increaseBtn.disabled = false;
+            
+            // Enable buttons
+            if (checkoutBtn) {
+                checkoutBtn.disabled = false;
+                checkoutBtn.style.opacity = '1';
+                checkoutBtn.style.cursor = 'pointer';
+            }
+            if (addToCartBtn) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.style.opacity = '1';
+                addToCartBtn.style.cursor = 'pointer';
+            }
+        }
+
+        // Show modal
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            console.log('Modal opened successfully');
+        } else {
+            console.error('Modal element not found!');
+        }
+    }
+
+    function closeAddToCartModal() {
+        document.getElementById('addToCartModal').classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+        currentProductId = null;
+        currentMaxStock = 0;
+    }
+
+    function increaseQuantity() {
+        const quantityInput = document.getElementById('modalQuantity');
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue < currentMaxStock) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        const quantityInput = document.getElementById('modalQuantity');
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    function confirmAddToCart() {
+        if (!currentProductId) return;
+
+        const quantity = parseInt(document.getElementById('modalQuantity').value);
+        
+        // Call the existing addToCart function with quantity
+        fetch("{{ route('add.to.cart') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            },
+            body: JSON.stringify({ item_id: currentProductId, quantity: quantity }),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            // Close modal
+            closeAddToCartModal();
+            
+            // Reload cart
+            if (typeof loadCart === 'function') {
+                loadCart();
+            }
+        })
+        .catch((error) => {
+            console.error('Error adding to cart:', error);
+        });
+    }
+
+    function buyNow() {
+        if (!currentProductId) {
+            console.error('No product ID found');
+            return;
+        }
+
+        const quantity = parseInt(document.getElementById('modalQuantity').value);
+        const productName = document.getElementById('modalProductName').textContent;
+        const productPrice = document.getElementById('modalProductPrice').textContent.replace('₱', '').replace(',', '');
+        const productImage = document.getElementById('modalProductImage').src;
+
+        console.log('Buy Now clicked - Product ID:', currentProductId, 'Quantity:', quantity);
+        
+        // Store the item in localStorage for direct checkout
+        const directCheckoutItem = {
+            item_id: currentProductId,
+            item_name: productName,
+            price: parseFloat(productPrice),
+            quantity: quantity,
+            image: productImage.split('/storage/products/')[1], // Get just the filename
+            timestamp: Date.now()
+        };
+
+        // Save to localStorage
+        localStorage.setItem('directCheckoutItem', JSON.stringify(directCheckoutItem));
+        console.log('Saved to localStorage:', directCheckoutItem);
+        
+        // Disable button and show loading
+        const buyNowBtn = document.getElementById('buyNowBtn');
+        if (buyNowBtn) {
+            buyNowBtn.disabled = true;
+            buyNowBtn.textContent = 'Processing...';
+            buyNowBtn.style.opacity = '0.7';
+        }
+
+        // Redirect to direct checkout
+        window.location.href = "{{ route('item.direct.checkout') }}";
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('addToCartModal');
+        if (modal && event.target === modal) {
+            closeAddToCartModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modal = document.getElementById('addToCartModal');
+            if (modal && modal.classList.contains('active')) {
+                closeAddToCartModal();
+            }
+        }
+    });
 </script>

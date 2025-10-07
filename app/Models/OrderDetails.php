@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetails extends Model
 {
-    protected $fillable = ['order_code', 'customer_id', 'status', 'total_amount'];
+    protected $fillable = ['order_code', 'customer_id', 'status', 'total_amount', 'delivery_address'];
 
     protected $casts = [
         'created_at' => 'datetime',

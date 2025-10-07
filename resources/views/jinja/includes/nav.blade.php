@@ -327,9 +327,7 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                 
             @else
                 <a href="{{ route('login') }}" class="login-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M10.09 15.59L8.67 14.17L11.17 11.67H4V9.67H11.17L8.67 7.17L10.09 5.75L15.34 11L10.09 15.59ZM20 19V5C20 3.9 19.1 3 18 3H12V5H18V19H12V21H18C19.1 21 20 20.1 20 19Z"/>
-                    </svg>
+                        
                     Login
                 </a>
             @endif

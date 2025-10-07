@@ -25,7 +25,7 @@
                         <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2" fill="none"/>
                     </svg>
-                    Texttile
+                    Textile
                 </a>
             </li>
             <!-- Orders -->

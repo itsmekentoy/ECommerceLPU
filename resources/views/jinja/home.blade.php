@@ -51,16 +51,14 @@
                     <img src="{{ asset('storage/products/' . $item->file_path) }}" alt="{{ $item->item_name }}">
                     <div class="product-info">
                         <h3>{{ $item->item_name }}</h3>
+                        <p class="product-description">{{ $item->description }}</p> 
                         <p class="product-price">₱{{ number_format($item->price, 2) }}</p>
-                        @if($currentCustomer)
-                        <button onclick="addToCart({{ $item->id }})"
-                            class="add-to-cart-btn"
-                            @if ($item->stock <= 0)
-                                disabled style="background-color: gray; cursor: not-allowed;"
-                            @endif>
-                            {{ $item->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
+                       
+                        <button onclick="openAddToCartModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $item->price }}, '{{ $item->file_path }}', {{ $item->stock }})"
+                            class="add-to-cart-btn">
+                            View
                         </button>
-                        @endif
+
 
                     </div>
                 </div>
@@ -73,7 +71,40 @@
     </section>
 </main>    
 
-
+<!-- Add to Cart Modal -->
+<div class="modal-overlay" id="addToCartModal">
+    <div class="add-to-cart-modal">
+        <div class="modal-header">
+            <h3>Add to Cart</h3>
+            <button class="close-modal" onclick="closeAddToCartModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-product-info">
+                <img id="modalProductImage" src="" alt="Product Image" class="modal-product-image">
+                <div class="modal-product-details">
+                    <h4 id="modalProductName"></h4>
+                    <p class="modal-product-price" id="modalProductPrice"></p>
+                    <p class="modal-product-stock" id="modalStockText">Available Stock: <span id="modalProductStock"></span></p>
+                    <p class="modal-unavailable" id="modalUnavailable" style="display: none; color: red; font-weight: bold;">Unavailable</p>
+                </div>
+            </div>
+            <div class="modal-quantity-control" id="modalQuantityControl">
+                <label for="modalQuantity">Quantity:</label>
+                <div class="quantity-input-group">
+                    <button class="quantity-btn" id="decreaseBtn" onclick="decreaseQuantity()">-</button>
+                    <input type="number" id="modalQuantity" value="1" min="1" max="999" readonly>
+                    <button class="quantity-btn" id="increaseBtn" onclick="increaseQuantity()">+</button>
+                </div>
+            </div>
+            @if($currentCustomer)
+            <div class="modal-actions">
+                <button class="btn-cancel" id="buyNowBtn" onclick="buyNow()">Buy Now</button>
+                <button class="btn-add-to-cart" id="addToCartBtn" onclick="confirmAddToCart()">Add to Cart</button>
+            </div>
+            @endif
+        </div>
+    </div>
+</div>
 
 
 @include('jinja.includes.cart')

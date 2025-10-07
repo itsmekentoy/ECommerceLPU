@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerAddtoCart;
 use App\Models\CustomerInformation;
+use App\Models\Item;
 use App\Models\OrderDetailItem;
 use App\Models\OrderDetails;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class CustomerOrder extends Controller
                 ->dismissible(true)
                 ->error('Please log in to proceed to checkout.');
 
-            return response()->back();
+            return redirect()->back();
         }
 
         $customerId = session('customer_id');
@@ -36,7 +37,51 @@ class CustomerOrder extends Controller
                 ->dismissible(true)
                 ->error('Your cart is empty.');
 
-            return response()->back();
+            return redirect()->back();
+        }
+
+        // Calculate totals
+        $subtotal = 0;
+        foreach ($cartItems as $cartItem) {
+            $subtotal += $cartItem->item->price * $cartItem->quantity;
+        }
+
+        $customer = CustomerInformation::find($customerId);
+
+        return view('jinja.checkout', compact('cartItems', 'subtotal', 'customer'));
+    }
+
+    public function placeOrder(Request $request)
+    {
+        if (! session()->has('customer_id')) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Please log in to place an order.');
+
+            return redirect()->back();
+        }
+
+        $validated = $request->validate([
+            'delivery_address' => 'required|string|max:500',
+        ]);
+
+        $customerId = session('customer_id');
+        $cartItems = CustomerAddtoCart::where('customer_id', $customerId)
+            ->with('item')
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Your cart is empty.');
+
+            return redirect()->back();
         }
 
         // Calculate total amount
@@ -52,6 +97,7 @@ class CustomerOrder extends Controller
             'total_amount' => $totalAmount,
             'status' => '1',
             'order_code' => $orderCode,
+            'delivery_address' => $validated['delivery_address'],
         ]);
 
         // Create order items
@@ -67,6 +113,100 @@ class CustomerOrder extends Controller
 
         // Clear the cart
         CustomerAddtoCart::where('customer_id', $customerId)->delete();
+
+        //update the item status
+        foreach ($cartItems as $cartItem) {
+            $item = Item::find($cartItem->item_id);
+            $item->stock -= $cartItem->quantity;
+            $item->save();
+        }
+
+        // Send email notification
+        $this->sendEmailNotification($order, $customerId);
+
+        notyf()
+            ->duration(3000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('Order placed successfully!');
+
+        return redirect()->route('shop');
+    }
+
+    public function directCheckout(Request $request)
+    {
+        if (! session()->has('customer_id')) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Please log in to proceed to checkout.');
+
+            return redirect()->route('home');
+        }
+
+        $customerId = session('customer_id');
+        $customer = CustomerInformation::find($customerId);
+
+        // Just return the view - the item data will be read from localStorage via JavaScript
+        return view('jinja.checkout-direct', compact('customer'));
+    }
+
+    public function placeDirectOrder(Request $request)
+    {
+        if (! session()->has('customer_id')) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Please log in to place an order.');
+
+            return redirect()->back();
+        }
+
+        $validated = $request->validate([
+            'delivery_address' => 'required|string|max:500',
+            'item_id' => 'required|exists:items,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $customerId = session('customer_id');
+        $item = Item::findOrFail($validated['item_id']);
+
+        // Check stock again
+        if ($item->stock < $validated['quantity']) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Insufficient stock available.');
+
+            return redirect()->back();
+        }
+
+        $totalAmount = $item->price * $validated['quantity'];
+
+        // Create order
+        $orderCode = str_pad(mt_rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        $order = OrderDetails::create([
+            'customer_id' => $customerId,
+            'total_amount' => $totalAmount,
+            'status' => '1',
+            'order_code' => $orderCode,
+            'delivery_address' => $validated['delivery_address'],
+        ]);
+
+        // Create order item
+        OrderDetailItem::create([
+            'order_detail_id' => $order->id,
+            'item_id' => $item->id,
+            'quantity' => $validated['quantity'],
+            'price' => $item->price,
+        ]);
 
         // Send email notification
         $this->sendEmailNotification($order, $customerId);
