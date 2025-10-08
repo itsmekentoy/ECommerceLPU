@@ -2157,6 +2157,28 @@ h6 {
     color: #4CAF50;
 }
 
+.modal-product-description {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid #c17854;
+}
+
+.modal-product-description h5 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.modal-product-description p {
+    margin: 0;
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.85rem;
+}
+
 .modal-quantity-control {
     margin-bottom: 2rem;
 }

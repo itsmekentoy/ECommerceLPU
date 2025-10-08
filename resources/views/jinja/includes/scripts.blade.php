@@ -60,7 +60,7 @@
     let currentProductId = null;
     let currentMaxStock = 0;
 
-    function openAddToCartModal(productId, productName, productPrice, productImage, stock) {
+    function openAddToCartModal(productId, productName, productPrice, productImage, stock, description = '') {
         console.log('Opening modal for product:', productId, productName);
         currentProductId = productId;
         currentMaxStock = stock;
@@ -74,6 +74,7 @@
         document.getElementById('modalProductPrice').textContent = '₱' + parseFloat(productPrice).toFixed(2);
         document.getElementById('modalProductImage').src = '/storage/products/' + productImage;
         document.getElementById('modalProductStock').textContent = stock;
+        document.getElementById('modalProductDescription').textContent = description || 'No description available.';
         document.getElementById('modalQuantity').value = 1;
         document.getElementById('modalQuantity').max = stock;
 
@@ -83,7 +84,7 @@
         const quantityControl = document.getElementById('modalQuantityControl');
         const decreaseBtn = document.getElementById('decreaseBtn');
         const increaseBtn = document.getElementById('increaseBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
+        const buyNowBtn = document.getElementById('buyNowBtn');
         const addToCartBtn = document.getElementById('addToCartBtn');
 
         if (stock <= 0) {
@@ -97,10 +98,10 @@
             if (increaseBtn) increaseBtn.disabled = true;
             
             // Disable buttons
-            if (checkoutBtn) {
-                checkoutBtn.disabled = true;
-                checkoutBtn.style.opacity = '0.5';
-                checkoutBtn.style.cursor = 'not-allowed';
+            if (buyNowBtn) {
+                buyNowBtn.disabled = true;
+                buyNowBtn.style.opacity = '0.5';
+                buyNowBtn.style.cursor = 'not-allowed';
             }
             if (addToCartBtn) {
                 addToCartBtn.disabled = true;
@@ -118,10 +119,10 @@
             if (increaseBtn) increaseBtn.disabled = false;
             
             // Enable buttons
-            if (checkoutBtn) {
-                checkoutBtn.disabled = false;
-                checkoutBtn.style.opacity = '1';
-                checkoutBtn.style.cursor = 'pointer';
+            if (buyNowBtn) {
+                buyNowBtn.disabled = false;
+                buyNowBtn.style.opacity = '1';
+                buyNowBtn.style.cursor = 'pointer';
             }
             if (addToCartBtn) {
                 addToCartBtn.disabled = false;
@@ -165,6 +166,12 @@
 
     function confirmAddToCart() {
         if (!currentProductId) return;
+        
+        // Check if product is out of stock
+        if (currentMaxStock <= 0) {
+            alert('This product is currently unavailable.');
+            return;
+        }
 
         const quantity = parseInt(document.getElementById('modalQuantity').value);
         const productName = document.getElementById('modalProductName').textContent;
@@ -267,6 +274,12 @@
     function buyNow() {
         if (!currentProductId) {
             console.error('No product ID found');
+            return;
+        }
+        
+        // Check if product is out of stock
+        if (currentMaxStock <= 0) {
+            alert('This product is currently unavailable.');
             return;
         }
 

@@ -54,7 +54,7 @@
                         <p class="product-description" title="{{ $item->description }}">{{ $item->description }}</p> 
                         <p class="product-price">₱{{ number_format($item->price, 2) }}</p>
                        
-                        <button onclick="openAddToCartModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $item->price }}, '{{ $item->file_path }}', {{ $item->stock }})"
+                        <button onclick="openAddToCartModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $item->price }}, '{{ $item->file_path }}', {{ $item->stock }}, '{{ addslashes($item->description) }}')"
                             class="add-to-cart-btn">
                             View
                         </button>
@@ -87,6 +87,10 @@
                     <p class="modal-product-stock" id="modalStockText">Available Stock: <span id="modalProductStock"></span></p>
                     <p class="modal-unavailable" id="modalUnavailable" style="display: none; color: red; font-weight: bold;">Unavailable</p>
                 </div>
+            </div>
+            <div class="modal-product-description">
+                <h5>Description</h5>
+                <p id="modalProductDescription"></p>
             </div>
             <div class="modal-quantity-control" id="modalQuantityControl">
                 <label for="modalQuantity">Quantity:</label>
