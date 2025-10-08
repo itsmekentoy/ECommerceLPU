@@ -64,7 +64,8 @@
                             <!-- Product Image -->
                             <img src="{{ asset('storage/products/' . $item->file_path) }}"
                                  alt="{{ $item->item_name }}"
-                                 class="w-full h-48 object-cover rounded">
+                                 class="w-full h-48 object-cover rounded"
+                                 style="margin-top: 10px;">
 
                             <!-- Product Info -->
                             <div class="product-info mt-3">
