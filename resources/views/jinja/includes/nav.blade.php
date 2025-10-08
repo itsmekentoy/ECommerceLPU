@@ -23,7 +23,7 @@
                 <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">About Us</a>
             </li>
             <li>
-                <a href="{{ route('shop') }}" class="{{ request()->routeIs('shop') ? 'active' : '' }}">Shops</a>
+                <a href="{{ route('shop') }}" class="{{ request()->routeIs('shop') ? 'active' : '' }}">Shop</a>
             </li>
             <li>
                 <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact Us</a>
@@ -149,7 +149,7 @@
                         <form id="chatModalForm" style="display:flex;align-items:center;gap:0.4rem;">
                             <input type="text" placeholder="Type a message..." style="flex:1;padding:0.5rem 0.8rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;font-size:1rem;" />
                             
-                            <button type="submit" style="background:#ea580c;color:#fff;border:none;border-radius:0.5rem;padding:0.5rem 1rem;font-weight:600;cursor:pointer;">Send</button>
+                            <button type="submit" style="background:rgb(194, 65, 12);color:#fff;border:none;border-radius:0.5rem;padding:0.5rem 1rem;font-weight:600;cursor:pointer;">Send</button>
                         </form>
                     </div>
                 </div>
@@ -401,7 +401,7 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                             <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
                                 <button type="button" onclick="closeProfileModal()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#e5e7eb;color:#374151;border:none;cursor:pointer;">Close</button>
                                 <button type="button" onclick="document.getElementById('logoutForm').submit()" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#ef4444;color:#fff;font-weight:600;border:none;cursor:pointer;">Logout</button>
-                                <button type="submit" style="padding:0.5rem 1rem;border-radius:0.5rem;background:#ea580c;color:#fff;font-weight:600;border:none;cursor:pointer;">Save Changes</button>
+                                <button type="submit" style="padding:0.5rem 1rem;border-radius:0.5rem;background:rgb(194, 65, 12);color:#fff;font-weight:600;border:none;cursor:pointer;">Save Changes</button>
                             </div>
                         </form>
                         <!-- Hidden logout form outside profile form and button row -->

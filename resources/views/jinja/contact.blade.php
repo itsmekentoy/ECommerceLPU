@@ -27,7 +27,7 @@
                                 </div>
                                 <div class="contact-text">
                                     <h4>Address</h4>
-                                    <p>123 Main Street, Ibaan, Batangas<br>Philippines 4230</p>
+                                    <p>Munting Tubig, Ibaan<br>Philippines 4230</p>
                                 </div>
                             </div>
                             
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="contact-text">
                                     <h4>Phone</h4>
-                                    <p>+63 917 123 4567<br>+63 43 123 4567</p>
+                                    <p>+63 961 487 6218</p>
                                 </div>
                             </div>
                             
@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="contact-text">
                                     <h4>Email</h4>
-                                    <p>info@habingibaan.com<br>support@habingibaan.com</p>
+                                    <p>engreyman@gmail.com</p>
                                 </div>
                             </div>
                             

@@ -690,12 +690,12 @@ document.addEventListener('click', function(event) {
 }
 
 .btn-add-cart-custom {
-    background: #c17854;
+    background: rgb(194, 65, 12);
     color: white;
 }
 
 .btn-add-cart-custom:hover {
-    background: #a66545;
+    background: rgb(154, 52, 18);
     transform: translateY(-2px);
 }
 

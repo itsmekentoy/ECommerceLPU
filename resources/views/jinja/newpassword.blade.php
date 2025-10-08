@@ -64,7 +64,10 @@
                 <button 
                     type="submit" 
                     id="loginBtn"
-                    class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    class="w-full text-white font-semibold py-3 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    style="background: rgb(194, 65, 12);"
+                    onmouseover="this.style.background='rgb(154, 52, 18)'"
+                    onmouseout="this.style.background='rgb(194, 65, 12)'"
                 >
                     Save New Password
                 </button>
