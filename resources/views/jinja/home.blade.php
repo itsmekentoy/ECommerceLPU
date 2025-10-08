@@ -51,7 +51,7 @@
                     <img src="{{ asset('storage/products/' . $item->file_path) }}" alt="{{ $item->item_name }}">
                     <div class="product-info">
                         <h3>{{ $item->item_name }}</h3>
-                        <p class="product-description">{{ $item->description }}</p> 
+                        <p class="product-description" title="{{ $item->description }}">{{ $item->description }}</p> 
                         <p class="product-price">₱{{ number_format($item->price, 2) }}</p>
                        
                         <button onclick="openAddToCartModal({{ $item->id }}, '{{ addslashes($item->item_name) }}', {{ $item->price }}, '{{ $item->file_path }}', {{ $item->stock }})"
