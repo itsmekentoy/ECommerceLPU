@@ -307,11 +307,8 @@ class CustomerAuthentication extends Controller
         $mailerService = new MailerService;
         $emailBody = view('email.password', [
             'name' => $csi->name,
-            'password' => $password,
+            'verificationLink' => env('MYLINK').'/password/reset/'.urlencode($csi->email),
         ])->render();
-
-        $csi->password = Hash::make($password);
-        $csi->save();
 
         $emailResult = $mailerService->sendMail($csi->email, $emailBody);
 
@@ -320,10 +317,62 @@ class CustomerAuthentication extends Controller
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('A new password has been sent to your email address.');
+            ->success('A password reset link has been sent to your email address.');
 
         return redirect()->route('login');
     }
+
+    public function resetPassword($email)
+    {   
+        $EmailChecker  = CustomerInformationData::where('email', $email)->first();
+        if(!$EmailChecker){
+            notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true) 
+            ->error('Invalid password reset link.');
+            return redirect()->route('login');
+        }
+
+
+
+        return view('jinja.newpassword', ['email' => $email]);
+    }
+
+    public function changeNewPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'new_password' => 'required|string|min:8',
+        ]);
+
+        $customer = CustomerInformationData::where('email', $request->email)->first();
+        if (! $customer) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('User not found.');
+
+            return redirect()->back()->withInput();
+        }
+
+        $customer->password = Hash::make($request->new_password);
+        $customer->save();
+
+        notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('Password changed successfully! You can now log in with your new password.');
+
+        return redirect()->route('login');
+    }
+
+
 }
 
 

@@ -74,25 +74,33 @@
                         <form class="contact-form" id="contactForm">
                             <h3>Send us a Message</h3>
                             
-                            <div class="form-row">
+                           
                                 <div class="form-group">
                                     <label for="firstName">First Name *</label>
-                                    <input type="text" id="firstName" name="firstName" required>
+                                    <input type="text" id="firstName" name="firstName"
+                                    @if($currentCustomer)
+                                        value="{{ $currentCustomer->name }}"
+                                    @endif
+                                    required>
+                                    
                                 </div>
-                                <div class="form-group">
-                                    <label for="lastName">Last Name *</label>
-                                    <input type="text" id="lastName" name="lastName" required>
-                                </div>
-                            </div>
+                               
                             
                             <div class="form-group">
                                 <label for="email">Email Address *</label>
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="email"
+                                @if($currentCustomer)
+                                    value="{{ $currentCustomer->email }}"
+                                @endif
+                                required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" name="phone">
+                                <input type="tel" id="phone" name="phone"
+                                @if($currentCustomer)
+                                    value="{{ $currentCustomer->phone }}"
+                                @endif>
                             </div>
                             
                             <div class="form-group">
@@ -114,13 +122,7 @@
                                 <textarea id="message" name="message" rows="6" placeholder="Please provide details about your inquiry..." required></textarea>
                             </div>
                             
-                            <div class="form-group checkbox-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" id="newsletter" name="newsletter">
-                                    <span class="checkmark"></span>
-                                    Subscribe to our newsletter for updates on new products and special offers
-                                </label>
-                            </div>
+                            
                             
                             <button type="submit" class="submit-btn">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -139,13 +141,26 @@
             <div class="container">
                 <h2>Find Us</h2>
                 <div class="map-container">
-                    <div class="map-placeholder">
-                        <img src="/placeholder.svg?height=400&width=800" alt="HabingIbaan Location Map">
-                        <div class="map-overlay">
+                    <div class="map-wrapper">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3873.7421844106907!2d121.16230317514977!3d13.854508286548135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd1353e2ef64c9%3A0xdb78526ee640c04d!2sSM%20Sunrise%20Weaving%20Association!5e0!3m2!1sen!2sph!4v1759854682581!5m2!1sen!2sph" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0; border-radius: 12px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        <div class="map-info-card">
                             <div class="map-info">
-                                <h4>HabingIbaan Store</h4>
-                                <p>123 Main Street, Ibaan, Batangas</p>
-                                <a href="#" class="directions-btn">Get Directions</a>
+                                <h4>SM Sunrise Weaving Association</h4>
+                                <p>Ibaan, Batangas</p>
+                                <a href="https://www.google.com/maps/dir//SM+Sunrise+Weaving+Association/@13.854508286548135,121.16230317514977,15z" target="_blank" class="directions-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5S14.5 7.62 14.5 9S13.38 11.5 12 11.5Z"/>
+                                    </svg>
+                                    Get Directions
+                                </a>
                             </div>
                         </div>
                     </div>

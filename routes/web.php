@@ -25,6 +25,8 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
     Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
     Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/password/reset/{email}', 'resetPassword')->name('password.update');
+    Route::post('/password/change/new', 'changeNewPassword')->name('password.change.new');
 });
 
 Route::controller(LandinPageController::class)->group(function () {

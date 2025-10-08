@@ -39,45 +39,34 @@
                 Please enter your email and password to log in.
             </p>
 
-            <form class="space-y-6" method="POST" action="{{ route('authenticate') }}" id="loginForm">
+            <form class="space-y-6" method="POST" action="{{ route('password.change.new') }}" id="loginForm">
                 @csrf
                 
 
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
-                        Email Address
+                        New Password
                     </label>
                     <input 
                         class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
                         id="email" 
-                        name="email"
-                        type="email" 
-                        placeholder="Enter your email"
+                        name="new_password"
+                        type="password"
+                        placeholder="Enter your new password"
                     >
+                    <input type="hidden" name="email" value="{{ $email }}">
                 </div>
                 
-                <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
-                        Password
-                    </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="password" 
-                        name="password"
-                        type="password" 
-                        placeholder="Enter your password"
-                    >
-                <div class="flex justify-end mt-2">
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot Password?</a>
-                </div>
-                </div>
+
+                
+                
                 
                 <button 
                     type="submit" 
                     id="loginBtn"
                     class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                    Login
+                    Save New Password
                 </button>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -85,15 +74,12 @@
                 const btn = document.getElementById('loginBtn');
                 form.addEventListener('submit', function() {
                     btn.disabled = true;
-                    btn.textContent = 'Logging in...';
+                    btn.textContent = 'Loading...';
                 });
             });
         </script>
                 
-                <p class="text-center text-gray-600 text-sm">
-                    Not yet Register?
-                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium">Sign In</a>
-                </p>
+                
             </form>
         </div>
         

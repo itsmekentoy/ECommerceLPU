@@ -4,7 +4,18 @@
             <span class="habing">Habing</span><span class="ibaan">Ibaan</span>
         </a>
         
-        <ul class="nav-menu">
+        <!-- Hamburger Menu Button (Mobile Only) -->
+        <button class="hamburger-menu" id="hamburgerMenu" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+        
+        <!-- Navigation Menu -->
+        <ul class="nav-menu" id="navMenu">
             <li>
                 <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             </li>
@@ -17,10 +28,50 @@
             <li>
                 <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact Us</a>
             </li>
+            
+            <!-- Mobile Only: Actions in Menu -->
+            <div class="mobile-only-actions">
+                @if($currentCustomer)
+                <li class="mobile-menu-item">
+                    <button class="mobile-cart-btn" onclick="toggleCart(); toggleMobileMenu();">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-2h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0 0 20.5 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7.42c-.14 0-.25-.11-.26-.25z"/>
+                        </svg>
+                        <span>Cart</span>
+                        <span class="cart-badge-mobile">{{ $countItems ?? 0 }}</span>
+                    </button>
+                </li>
+                <li class="mobile-menu-item">
+                    <button class="mobile-profile-btn" onclick="openProfileModal(); toggleMobileMenu();">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+                        </svg>
+                        <span>Profile</span>
+                    </button>
+                </li>
+                <li class="mobile-menu-item">
+                    <button class="mobile-chat-btn" onclick="document.getElementById('chatBtn').click(); toggleMobileMenu();">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span>Chat</span>
+                    </button>
+                </li>
+                @else
+                <li class="mobile-menu-item">
+                    <a href="{{ route('login') }}" class="mobile-login-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+                        </svg>
+                        <span>Login</span>
+                    </a>
+                </li>
+                @endif
+            </div>
         </ul>
 
         
-        <div class="nav-actions">
+        <div class="nav-actions desktop-only-actions">
             @if($currentCustomer)
             <button class="cart-btn" onclick="toggleCart()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -384,6 +435,27 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                     sidebar.style.display = isOpen ? 'none' : 'block';
                     overlay.style.display = isOpen ? 'none' : 'block';
                 }
+
+                // Mobile Menu Toggle
+                function toggleMobileMenu() {
+                    const navMenu = document.getElementById('navMenu');
+                    const overlay = document.getElementById('mobileMenuOverlay');
+                    const hamburger = document.getElementById('hamburgerMenu');
+                    
+                    navMenu.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                    hamburger.classList.toggle('active');
+                    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+                }
+
+                // Close mobile menu when clicking on a nav link
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth <= 768) {
+                            toggleMobileMenu();
+                        }
+                    });
+                });
             </script>
         </div>
     </div>
