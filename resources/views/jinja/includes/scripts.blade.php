@@ -46,14 +46,51 @@
         // Add 'active' class to the clicked tab
         event.currentTarget.classList.add('active');
 
-        // Show/hide products by category
+        // Get search query if exists
+        const searchInput = document.getElementById('searchInput');
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        // Show/hide products by category and search
         document.querySelectorAll('.product-card').forEach(card => {
-            if (category === 'all' || card.getAttribute('data-category') === category) {
-                card.style.display = '';
+            const matchesCategory = category === 'all' || card.getAttribute('data-category') === category;
+            
+            if (matchesCategory) {
+                // If there's a search query, also check if product matches search
+                if (searchQuery !== '') {
+                    const productName = card.querySelector('h3').textContent.toLowerCase();
+                    const productDescription = card.querySelector('.product-description') 
+                        ? card.querySelector('.product-description').textContent.toLowerCase() 
+                        : '';
+                    
+                    if (productName.includes(searchQuery) || productDescription.includes(searchQuery)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                } else {
+                    card.style.display = '';
+                }
             } else {
                 card.style.display = 'none';
             }
         });
+
+        // Update search results if search input exists
+        if (searchInput && searchQuery !== '') {
+            const searchResults = document.getElementById('searchResults');
+            const visibleCount = Array.from(document.querySelectorAll('.product-card')).filter(card => card.style.display !== 'none').length;
+            
+            if (visibleCount === 0) {
+                searchResults.textContent = 'No products found matching "' + searchQuery + '"';
+                searchResults.style.color = '#ef4444';
+            } else if (visibleCount === 1) {
+                searchResults.textContent = '1 product found';
+                searchResults.style.color = '#059669';
+            } else {
+                searchResults.textContent = visibleCount + ' products found';
+                searchResults.style.color = '#059669';
+            }
+        }
     }
 
     // Add to Cart Modal functionality

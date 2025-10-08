@@ -10,6 +10,27 @@
         </div>
     </section>
 
+    <!-- Search Bar -->
+    <section class="search-section py-4 bg-white border-b">
+        <div class="container mx-auto">
+            <div class="search-container" style="max-width: 600px; margin: 0 auto; margin-top:50px;">
+                <div style="position: relative;">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Search for products..." 
+                           style="width: 100%; padding: 0.75rem 3rem 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 1rem; outline: none; transition: border-color 0.3s;"
+                           onkeyup="searchProducts()"
+                           onfocus="this.style.borderColor='#ea580c'"
+                           onblur="this.style.borderColor='#e5e7eb'">
+                    <svg style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af; pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <div id="searchResults" style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Product Tabs -->
     <section class="shop-section py-8">
         <div class="container mx-auto">
@@ -164,6 +185,50 @@
 @include('jinja.includes.scripts')
 
 <script>
+// Search functionality
+function searchProducts() {
+    const searchInput = document.getElementById('searchInput');
+    const searchQuery = searchInput.value.toLowerCase().trim();
+    const productCards = document.querySelectorAll('.product-card');
+    const searchResults = document.getElementById('searchResults');
+    const activeTab = document.querySelector('.tab-btn.active');
+    const activeCategory = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+    let visibleCount = 0;
+    
+    productCards.forEach(card => {
+        const productName = card.querySelector('h3').textContent.toLowerCase();
+        const productDescription = card.querySelector('.product-description').textContent.toLowerCase();
+        const cardCategory = card.getAttribute('data-category');
+        
+        // Check if matches category filter
+        const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+        
+        // Check if matches search query
+        const matchesSearch = searchQuery === '' || productName.includes(searchQuery) || productDescription.includes(searchQuery);
+        
+        if (matchesCategory && matchesSearch) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update search results text
+    if (searchQuery === '') {
+        searchResults.textContent = '';
+    } else if (visibleCount === 0) {
+        searchResults.textContent = 'No products found matching "' + searchQuery + '"';
+        searchResults.style.color = '#ef4444';
+    } else if (visibleCount === 1) {
+        searchResults.textContent = '1 product found';
+        searchResults.style.color = '#059669';
+    } else {
+        searchResults.textContent = visibleCount + ' products found';
+        searchResults.style.color = '#059669';
+    }
+}
+
 // Customization data
 let selectedTextileId = null;
 let selectedTextileData = {};
