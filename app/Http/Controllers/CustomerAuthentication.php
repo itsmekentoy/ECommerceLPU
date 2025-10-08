@@ -270,6 +270,64 @@ class CustomerAuthentication extends Controller
             ->success('Profile updated successfully!');
     }
 
+    public function uploadProfileImage(Request $request)
+    {
+        $customerId = session('customer_id');
+
+        if (!$customerId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must be logged in to upload a profile image.'
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $customer = CustomerInformationData::find($customerId);
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        try {
+            // Delete old profile image if exists
+            if ($customer->profile_path && \Storage::exists('public/' . $customer->profile_path)) {
+                \Storage::delete('public/' . $customer->profile_path);
+            }
+
+            // Store new image
+            $file = $request->file('profile_image');
+            $filename = 'profile_' . $customerId . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('profile_images', $filename, 'public');
+
+            // Update customer record
+            $customer->profile_path = $path;
+            $customer->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile image uploaded successfully!',
+                'image_url' => asset('storage/' . $path)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while uploading the image: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function logout(Request $request)
     {
         $request->session()->forget('customer_id');

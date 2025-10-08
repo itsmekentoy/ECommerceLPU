@@ -23,6 +23,7 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::post('/register', 'store')->name('register.store');
     Route::get('/confirmation', 'confirmEmail')->name('confirm.email');
     Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
+    Route::post('/uploadProfileImage', 'uploadProfileImage')->name('customer.upload.profile.image');
     Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
     Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
     Route::get('/password/reset/{email}', 'resetPassword')->name('password.update');

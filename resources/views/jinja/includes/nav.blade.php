@@ -291,7 +291,14 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                         <button onclick="closeProfileModal()" style="position:absolute;top:1rem;right:1rem;color:#6b7280;font-size:2rem;background:none;border:none;cursor:pointer;">&times;</button>
                         <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;">
                             <div style="position:relative;width:6rem;height:6rem;margin-bottom:0.5rem;">
-                                <img src="/imgs/logo.png" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:9999px;border:4px solid #fed7aa;" />
+                                <img id="profileImage" src="{{ $currentCustomer->profile_path ? asset('storage/' . $currentCustomer->profile_path) : '/imgs/logo.png' }}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:9999px;border:4px solid #fed7aa;" />
+                                <!-- Upload Loader -->
+                                <div id="uploadLoader" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.6);border-radius:9999px;align-items:center;justify-content:center;">
+                                    <svg style="width:2rem;height:2rem;color:#fff;animation:spin 0.8s linear infinite;" fill="none" viewBox="0 0 24 24">
+                                        <circle style="opacity:0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path style="opacity:0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
                                 <button type="button" onclick="triggerProfileImageUpload()" title="Update Image" style="position:absolute;bottom:0.2rem;right:0.2rem;background:#fff;border:none;border-radius:50%;width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.12);cursor:pointer;padding:0;">
                                     <svg width="20" height="20" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                         <path d="M12 20h9"/>
@@ -300,13 +307,73 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                                 </button>
                                 <input type="file" id="profileImageInput" accept="image/*" style="display:none;" />
                             </div>
+                            <style>
+                                @keyframes spin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
+                                }
+                            </style>
                             <script>
                                 function triggerProfileImageUpload() {
                                     document.getElementById('profileImageInput').click();
                                 }
                                 document.getElementById('profileImageInput').addEventListener('change', function(e) {
-                                    // TODO: Add AJAX upload logic here
-                                    alert('Profile image update feature coming soon!');
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+                                    
+                                    // Validate file type
+                                    if (!file.type.startsWith('image/')) {
+                                        alert('Please select an image file.');
+                                        return;
+                                    }
+                                    
+                                    // Validate file size (max 5MB)
+                                    if (file.size > 5 * 1024 * 1024) {
+                                        alert('Image size must be less than 5MB.');
+                                        return;
+                                    }
+                                    
+                                    // Show loader
+                                    const loader = document.getElementById('uploadLoader');
+                                    loader.style.display = 'flex';
+                                    
+                                    // Create FormData and upload
+                                    const formData = new FormData();
+                                    formData.append('profile_image', file);
+                                    formData.append('customer_id', '{{ $currentCustomer->id }}');
+                                    
+                                    fetch('{{ route('customer.upload.profile.image') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: formData
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            // Update image src
+                                            document.getElementById('profileImage').src = data.image_url;
+                                            // Show success message
+                                            if (typeof showSuccessToast === 'function') {
+                                                showSuccessToast('Profile image updated successfully!');
+                                            } else {
+                                                alert('Profile image updated successfully!');
+                                            }
+                                        } else {
+                                            alert(data.message || 'Failed to upload image.');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error uploading image:', error);
+                                        alert('An error occurred while uploading the image.');
+                                    })
+                                    .finally(() => {
+                                        // Hide loader
+                                        loader.style.display = 'none';
+                                        // Reset file input
+                                        e.target.value = '';
+                                    });
                                 });
                             </script>
                             <div id="profileName" style="font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;">{{ $currentCustomer->name ?? 'Customer Name' }}</div>
