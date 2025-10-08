@@ -492,15 +492,24 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
             </button>
             <script>
                 function closeCart() {
-                    document.getElementById('cartSidebar').style.display = 'none';
+                    document.getElementById('cartSidebar').classList.remove('open');
                     document.getElementById('overlay').style.display = 'none';
+                    document.body.style.overflow = '';
                 }
                 function toggleCart() {
                     var sidebar = document.getElementById('cartSidebar');
                     var overlay = document.getElementById('overlay');
-                    var isOpen = sidebar.style.display === 'block';
-                    sidebar.style.display = isOpen ? 'none' : 'block';
-                    overlay.style.display = isOpen ? 'none' : 'block';
+                    var isOpen = sidebar.classList.contains('open');
+                    
+                    if (isOpen) {
+                        sidebar.classList.remove('open');
+                        overlay.style.display = 'none';
+                        document.body.style.overflow = '';
+                    } else {
+                        sidebar.classList.add('open');
+                        overlay.style.display = 'block';
+                        document.body.style.overflow = 'hidden';
+                    }
                 }
 
                 // Mobile Menu Toggle
