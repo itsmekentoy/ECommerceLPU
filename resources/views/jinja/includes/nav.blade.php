@@ -287,7 +287,7 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
 
                 <!-- Profile Modal with Inline CSS -->
                 <div id="profileModal" style="position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
-                    <div style="background:#fff;border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:100%;max-width:400px;padding:2rem;position:relative;">
+                    <div style="background:#fff;border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:100%;max-width:550px;padding:2rem;position:relative;">
                         <button onclick="closeProfileModal()" style="position:absolute;top:1rem;right:1rem;color:#6b7280;font-size:2rem;background:none;border:none;cursor:pointer;">&times;</button>
                         <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;">
                             <div style="position:relative;width:6rem;height:6rem;margin-bottom:0.5rem;">
