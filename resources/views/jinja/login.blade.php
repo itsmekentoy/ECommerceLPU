@@ -94,8 +94,8 @@
         </script>
                 
                 <p class="text-center text-gray-600 text-sm">
-                    Not yet Register?
-                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium">Sign In</a>
+                    Not yet Registered?
+                    <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium">Sign Up</a>
                 </p>
             </form>
         </div>

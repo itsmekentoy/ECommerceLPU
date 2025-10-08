@@ -59,7 +59,7 @@
                 <div>
                     
                     <div class="flex justify-end mt-2">
-                        <a href="" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Back to Login</a>
+                        <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Back to Login</a>
                     </div>
                 </div>
                 
