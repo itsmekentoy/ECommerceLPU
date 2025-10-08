@@ -283,7 +283,6 @@ function loadProductsByCategory(categoryId) {
                                     <p class="product-price-detail">Textile: ₱${textilePrice.toFixed(2)}</p>
                                     <p class="product-price-custom">Total: ₱${totalPrice.toFixed(2)}</p>
                                 </div>
-                                <p class="product-stock-custom">Stock: ${item.stock}</p>
                                 ${item.stock > 0 ? `
                                     <div class="custom-product-actions">
                                         <button class="btn-buy-now-custom" onclick="buyNowCustomized(${item.id}, '${escapedItemName}', ${totalPrice}, '${item.file_path}')">
@@ -295,7 +294,7 @@ function loadProductsByCategory(categoryId) {
                                     </div>
                                 ` : `
                                     <button class="btn-select-product" disabled>
-                                        Out of Stock
+                                         Out of Stock
                                     </button>
                                 `}
                             </div>
