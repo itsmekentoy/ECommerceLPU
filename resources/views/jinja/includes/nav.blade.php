@@ -140,7 +140,7 @@
                         <button onclick="closeChatModal()" style="position:absolute;top:1rem;right:1rem;color:#6b7280;font-size:2rem;background:none;border:none;cursor:pointer;">&times;</button>
                         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;">
                             <div id="chatModalAvatar" style="width:2.8rem;height:2.8rem;background:#fed7aa;border-radius:50%;"></div>
-                            <div id="chatModalName" style="font-weight:600;font-size:1.1rem;">Chat Name</div>
+                            <div id="chatModalName" style="font-weight:600;font-size:1.1rem;">Conversation with Chat Name</div>
                         </div>
                         <div id="chatMessages" style="flex:1;overflow-y:auto;background:#f9fafb;border-radius:0.7rem;padding:1rem;margin-bottom:1rem;min-height:350px;max-height:520px;">
                             <!-- Example messages -->
@@ -159,7 +159,7 @@ window.currentChatAdminId = null;
 
 window.openChatModal = function(name, adminId) {
     document.getElementById('chatModal').style.display = 'flex';
-    document.getElementById('chatModalName').textContent = name;
+    document.getElementById('chatModalName').textContent = 'Conversation with ' + name;
     window.currentChatAdminId = adminId;
     window.fetchChatMessages();
     window.startChatPolling();

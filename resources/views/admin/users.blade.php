@@ -188,6 +188,13 @@ let isEditMode = false;
 const fetchMessagesUrl = '{{ route('conversation.fetch') }}';
 const sendMessageUrl = '{{ route('conversation.send') }}';
 
+// Build userNames object from PHP data
+const userNames = {
+    @foreach($customers as $user)
+        {{ $user->id }}: '{{ $user->name }}',
+    @endforeach
+};
+
 function openStatusModal(userId) {
     currentUserId = userId;
     document.getElementById('statusModal').classList.remove('hidden');
@@ -230,7 +237,6 @@ function openConversationModalWithLoader(userId, btn) {
     .then(response => response.json())
     .then(data => {
         currentUserId = data.conversation_id;
-        const userNames = {1: 'John Doe', 2: 'Jane Smith', 3: 'Maria Johnson'};
         document.getElementById('conversationUserName').textContent = userNames[userId] || 'User';
         document.getElementById('conversationModal').classList.remove('hidden');
         document.getElementById('conversationModal').classList.add('flex');
