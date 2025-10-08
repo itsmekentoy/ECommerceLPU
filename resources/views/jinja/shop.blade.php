@@ -60,7 +60,8 @@
                 @foreach ($items as $itemType)
                     @foreach ($itemType->items as $item)
                         <div class="product-card border rounded-lg p-4 shadow-sm hover:shadow-md"
-                             data-category="{{ $itemType->id }}">
+                             data-category="{{ $itemType->id }}"
+                             data-type="{{ strtolower($itemType->type_name) }}">
                             <!-- Product Image -->
                             <img src="{{ asset('storage/products/' . $item->file_path) }}"
                                  alt="{{ $item->item_name }}"
@@ -199,13 +200,17 @@ function searchProducts() {
     productCards.forEach(card => {
         const productName = card.querySelector('h3').textContent.toLowerCase();
         const productDescription = card.querySelector('.product-description').textContent.toLowerCase();
+        const productType = card.getAttribute('data-type') || '';
         const cardCategory = card.getAttribute('data-category');
         
         // Check if matches category filter
         const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
         
-        // Check if matches search query
-        const matchesSearch = searchQuery === '' || productName.includes(searchQuery) || productDescription.includes(searchQuery);
+        // Check if matches search query (name, description, or type)
+        const matchesSearch = searchQuery === '' || 
+                             productName.includes(searchQuery) || 
+                             productDescription.includes(searchQuery) ||
+                             productType.includes(searchQuery);
         
         if (matchesCategory && matchesSearch) {
             card.style.display = 'block';

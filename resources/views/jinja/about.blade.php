@@ -2,16 +2,13 @@
 @include('jinja.includes.nav')
 <main class="main-content">
         <!-- Hero Section with Background -->
-        <section class="about-hero">
-            <div class="hero-background">
-                <img src="/placeholder.svg?height=400&width=1200" alt="Traditional Marketplace" class="watermark-bg">
-                <div class="hero-overlay"></div>
-            </div>
-            <div class="hero-content">
-                <h1>About HabingIbaan</h1>
-                <p>Connecting communities through authentic local products and traditional craftsmanship</p>
+         <section class="shop-header py-6 bg-gray-100">
+            <div class="container mx-auto text-center">
+                <h1 class="text-2xl font-bold">About HabingIbaan</h1>
+                <p class="text-gray-600">Connecting communities through authentic local products and traditional craftsmanship</p>
             </div>
         </section>
+        
 
         <!-- About Us Section -->
         <section class="about-section">
