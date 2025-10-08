@@ -23,11 +23,31 @@
                                  class="checkout-item-image">
                             <div class="checkout-item-details">
                                 <h3>{{ $cartItem->item->item_name }}</h3>
-                                <p class="item-price">₱{{ number_format($cartItem->item->price, 2) }}</p>
+                                
+                                @if($cartItem->customization && $cartItem->textile)
+                                    {{-- Customized item with textile --}}
+                                    <p class="item-price">₱{{ number_format($cartItem->item->price, 2) }}</p>
+                                    <div class="textile-subitem">
+                                        <span class="textile-label">+ {{ $cartItem->textile->title }}</span>
+                                        <span class="textile-price">₱{{ number_format($cartItem->textile->price, 2) }}</span>
+                                    </div>
+                                    <p class="item-total-price" style="font-weight: 600; color: #c17854; margin-top: 0.5rem;">
+                                        Total: ₱{{ number_format($cartItem->price, 2) }}
+                                    </p>
+                                @else
+                                    {{-- Regular item without customization --}}
+                                    <p class="item-price">₱{{ number_format($cartItem->item->price, 2) }}</p>
+                                @endif
+                                
                                 <p class="item-quantity">Quantity: {{ $cartItem->quantity }}</p>
                             </div>
                             <div class="checkout-item-total">
-                                <p class="item-subtotal">₱{{ number_format($cartItem->item->price * $cartItem->quantity, 2) }}</p>
+                                @php
+                                    // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price
+                                    $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
+                                    $itemSubtotal = $itemPrice * $cartItem->quantity;
+                                @endphp
+                                <p class="item-subtotal">₱{{ number_format($itemSubtotal, 2) }}</p>
                             </div>
                         </div>
                         @endforeach
@@ -208,6 +228,30 @@ document.addEventListener('DOMContentLoaded', function() {
 .item-quantity {
     color: #666;
     font-size: 0.9rem;
+}
+
+/* Textile Customization Subitem */
+.textile-subitem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    margin: 0.5rem 0;
+    background: #f8f9fa;
+    border-left: 3px solid #c17854;
+    border-radius: 4px;
+}
+
+.textile-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+.textile-price {
+    font-size: 0.9rem;
+    color: #c17854;
+    font-weight: 600;
 }
 
 .checkout-item-total {

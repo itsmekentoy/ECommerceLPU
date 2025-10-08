@@ -26,7 +26,7 @@ class CustomerOrder extends Controller
 
         $customerId = session('customer_id');
         $cartItems = CustomerAddtoCart::where('customer_id', $customerId)
-            ->with('item')
+            ->with(['item', 'textile'])
             ->get();
 
         if ($cartItems->isEmpty()) {
@@ -43,7 +43,9 @@ class CustomerOrder extends Controller
         // Calculate totals
         $subtotal = 0;
         foreach ($cartItems as $cartItem) {
-            $subtotal += $cartItem->item->price * $cartItem->quantity;
+            // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price
+            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
+            $subtotal += $itemPrice * $cartItem->quantity;
         }
 
         $customer = CustomerInformation::find($customerId);

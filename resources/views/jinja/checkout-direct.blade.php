@@ -120,15 +120,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calculate totals
     const subtotal = item.price * item.quantity;
 
-    // Build the item HTML
-    const itemHTML = `
+    // Build the item HTML with optional textile customization
+    let itemHTML = `
         <div class="checkout-item">
             <img src="/storage/products/${item.image}" 
                  alt="${item.item_name}" 
                  class="checkout-item-image">
             <div class="checkout-item-details">
                 <h3>${item.item_name}</h3>
+    `;
+
+    // Check if item has customization (textile)
+    if (item.customization && item.textile_name) {
+        // Calculate individual prices
+        const baseItemPrice = parseFloat(item.price) - parseFloat(item.textile_price || 0);
+        
+        itemHTML += `
+                <p class="item-price">₱${baseItemPrice.toFixed(2)}</p>
+                <div class="textile-subitem">
+                    <span class="textile-label">+ ${item.textile_name}</span>
+                    <span class="textile-price">₱${parseFloat(item.textile_price).toFixed(2)}</span>
+                </div>
+                <p class="item-total-price" style="font-weight: 600; color: #c17854; margin-top: 0.5rem;">
+                    Total: ₱${parseFloat(item.price).toFixed(2)}
+                </p>
+        `;
+    } else {
+        itemHTML += `
                 <p class="item-price">₱${parseFloat(item.price).toFixed(2)}</p>
+        `;
+    }
+
+    itemHTML += `
                 <p class="item-quantity">Quantity: ${item.quantity}</p>
             </div>
             <div class="checkout-item-total">
@@ -282,6 +305,30 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
+}
+
+/* Textile Customization Subitem */
+.textile-subitem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    margin: 0.5rem 0;
+    background: #f8f9fa;
+    border-left: 3px solid #c17854;
+    border-radius: 4px;
+}
+
+.textile-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+.textile-price {
+    font-size: 0.9rem;
+    color: #c17854;
+    font-weight: 600;
 }
 
 /* Delivery Section */

@@ -851,11 +851,6 @@ h6 {
   border-color: var(--secondary);
 }
 
-.custom-tab:hover {
-  background: var(--primary);
-  border-color: var(--primary);
-}
-
 .tab-content {
   display: none;
 }
@@ -866,8 +861,9 @@ h6 {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+  max-width: 1200px;
 }
 
 /* Contact Page Styles */
@@ -1684,9 +1680,22 @@ h6 {
 }
 
 /* Responsive Design */
+/* Tablet */
+@media (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .nav-container {
     padding: 0 1rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   /* Show hamburger menu on mobile */
@@ -1915,11 +1924,6 @@ h6 {
   .tab-btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
   }
 
   .modal {

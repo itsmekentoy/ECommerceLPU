@@ -77,7 +77,7 @@
         <div class="modal-body">
             <!-- Step 1: Select Textile -->
             <div id="step1" class="customize-step">
-                <h4 class="step-title">Step 1: Select Textile</h4>
+                <h4 class="step-title">Select Textile</h4>
                 <div class="textile-grid">
                     @foreach($textiles as $textile)
                     <div class="textile-card" onclick="selectTextile({{ $textile->id }}, '{{ $textile->title }}', {{ $textile->price }}, '{{ $textile->file_path }}')">
@@ -94,7 +94,7 @@
             <!-- Step 2: Select Category -->
             <div id="step2" class="customize-step" style="display: none;">
                 <button class="btn-back" onclick="backToStep(1)">← Back</button>
-                <h4 class="step-title">Step 2: Select Product Category</h4>
+                <h4 class="step-title">Select Product Category</h4>
                 <p class="selected-info">Selected Textile: <strong id="selectedTextileName"></strong> (₱<span id="selectedTextilePrice"></span>)</p>
                 <div class="category-dropdown">
                     <label for="categorySelect">Choose Category:</label>
@@ -107,7 +107,7 @@
             <!-- Step 3: Select Product -->
             <div id="step3" class="customize-step" style="display: none;">
                 <button class="btn-back" onclick="backToStep(2)">← Back</button>
-                <h4 class="step-title">Step 3: Select Product</h4>
+                <h4 class="step-title">Select Product</h4>
                 <p class="selected-info">
                     Textile: <strong id="selectedTextileName2"></strong> (₱<span id="selectedTextilePrice2"></span>) | 
                     Category: <strong id="selectedCategoryName"></strong>
@@ -284,10 +284,20 @@ function loadProductsByCategory(categoryId) {
                                     <p class="product-price-custom">Total: ₱${totalPrice.toFixed(2)}</p>
                                 </div>
                                 <p class="product-stock-custom">Stock: ${item.stock}</p>
-                                <button class="btn-select-product" onclick="addCustomizedToCart(${item.id}, '${escapedItemName}', ${item.price}, ${totalPrice})" 
-                                    ${item.stock <= 0 ? 'disabled' : ''}>
-                                    ${item.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                                </button>
+                                ${item.stock > 0 ? `
+                                    <div class="custom-product-actions">
+                                        <button class="btn-buy-now-custom" onclick="buyNowCustomized(${item.id}, '${escapedItemName}', ${totalPrice}, '${item.file_path}')">
+                                            Buy Now
+                                        </button>
+                                        <button class="btn-add-cart-custom" onclick="addCustomizedToCart(${item.id}, '${escapedItemName}', ${item.price}, ${totalPrice})">
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <button class="btn-select-product" disabled>
+                                        Out of Stock
+                                    </button>
+                                `}
                             </div>
                         </div>
                     `;
@@ -357,6 +367,48 @@ function addCustomizedToCart(productId, productName, productPrice, totalPrice) {
         console.error('Error adding to cart:', error);
         alert('An error occurred while adding to cart.');
     });
+}
+
+function buyNowCustomized(productId, productName, totalPrice, productImage) {
+    // Check if customer is logged in
+    const isLoggedIn = {{ $currentCustomer ? 'true' : 'false' }};
+    
+    if (!isLoggedIn) {
+        alert('Please log in to purchase items.');
+        return;
+    }
+
+    console.log('Buy Now customized:', {
+        productId,
+        productName,
+        totalPrice,
+        textileId: selectedTextileData.id,
+        textileName: selectedTextileData.name,
+        textilePrice: selectedTextileData.price
+    });
+
+    // Store the customized item in localStorage for direct checkout
+    const directCheckoutItem = {
+        item_id: productId,
+        item_name: productName,
+        price: totalPrice,
+        quantity: 1,
+        image: productImage,
+        customization: selectedTextileData.id,
+        textile_name: selectedTextileData.name,
+        textile_price: selectedTextileData.price,
+        timestamp: Date.now()
+    };
+
+    // Save to localStorage
+    localStorage.setItem('directCheckoutItem', JSON.stringify(directCheckoutItem));
+    console.log('Saved customized item to localStorage:', directCheckoutItem);
+    
+    // Close modal
+    closeCustomizeModal();
+    
+    // Redirect to checkout
+    window.location.href = '/item/direct-checkout';
 }
 
 // Close modal when clicking outside
@@ -532,7 +584,7 @@ document.addEventListener('click', function(event) {
 .product-price-custom {
     color: #c17854;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin: 0.5rem 0;
     padding-top: 0.5rem;
     border-top: 1px solid #ddd;
@@ -542,6 +594,44 @@ document.addEventListener('click', function(event) {
     color: #666;
     font-size: 0.9rem;
     margin-bottom: 0.75rem;
+}
+
+.custom-product-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.btn-buy-now-custom,
+.btn-add-cart-custom {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-buy-now-custom {
+    background: #10b981;
+    color: white;
+}
+
+.btn-buy-now-custom:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.btn-add-cart-custom {
+    background: #c17854;
+    color: white;
+}
+
+.btn-add-cart-custom:hover {
+    background: #a66545;
+    transform: translateY(-2px);
 }
 
 .btn-select-product {
