@@ -132,7 +132,7 @@ class CustomerOrder extends Controller
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('Order placed successfully!');
+            ->success('Order placed successfully! Please check your email for the order details and payment instructions.');
 
         return redirect()->route('shop');
     }
@@ -219,7 +219,7 @@ class CustomerOrder extends Controller
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('Order placed successfully!');
+            ->success('Order placed successfully! Please check your email for the order details and payment instructions.');
 
         return redirect()->route('shop');
     }
@@ -404,6 +404,15 @@ class CustomerOrder extends Controller
                     <table style='width:100%; margin-top:20px;'>
                         <tr style='font-weight:bold;'><td style='text-align:right;'>Total:</td><td style='text-align:right;'>₱".number_format($subtotal, 2)."</td></tr>
                     </table>
+                </td>
+            </tr>
+            <tr>
+                <td style='padding:20px; border-top:1px solid #eee;'>
+                    <h3>Payment Instructions</h3>
+                    <p style='margin:0; color:#374151;'>
+                        Please send your payment  to this number <strong>09152236534</strong>. After payment, kindly reply to this email with a screenshot of your receipt for verification.
+                    </p>
+                    <div style='margin-top:16px; text-align:center;'>
                 </td>
             </tr>
 

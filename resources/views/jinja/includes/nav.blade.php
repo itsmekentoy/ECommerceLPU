@@ -376,15 +376,23 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
                                     });
                                 });
                             </script>
-                            <div id="profileName" style="font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;">{{ $currentCustomer->name ?? 'Customer Name' }}</div>
+                            <div id="profileName" style="font-size:1.25rem;font-weight:600;margin-bottom:0.25rem;">
+                                {{ $currentCustomer->first_name ?? 'Customer Name' }} {{ $currentCustomer->last_name ?? '' }}
+                            </div>
                             <div id="profileEmail" style="color:#6b7280;font-size:0.875rem;">{{ $currentCustomer->email ?? 'customer@email.com' }}</div>
                         </div>
                         <hr style="margin-bottom:1.5rem;">
                         <form id="profileForm">
                             @csrf
-                            <div style="margin-bottom:1rem;">
-                                <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalName">Name</label>
-                                <input id="modalName" name="name" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;" value="{{ $currentCustomer->name ?? '' }}">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div>
+                                    <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalFirstName">First Name</label>
+                                    <input id="modalFirstName" name="first_name" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;" value="{{$currentCustomer->first_name}}" required>
+                                </div>
+                                <div>
+                                    <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalLastName">Last Name</label>
+                                    <input id="modalLastName" name="last_name" type="text" style="width:100%;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.5rem;outline:none;" value="{{$currentCustomer->last_name}}" required>
+                                </div>
                             </div>
                             <div style="margin-bottom:1rem;">
                                 <label style="display:block;color:#374151;font-size:0.875rem;font-weight:500;margin-bottom:0.25rem;" for="modalEmail">Email</label>

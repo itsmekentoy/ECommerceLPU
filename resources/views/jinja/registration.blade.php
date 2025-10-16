@@ -39,17 +39,34 @@
 
             <form class="space-y-6" method="POST" action="{{ route('register.store') }}" id="registrationForm">
                 @csrf
-                <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2" for="name">
-                        Name
-                    </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="name" 
-                        name="name"
-                        type="text" 
-                        placeholder="Enter your name"
-                    >
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="first_name">
+                            First Name
+                        </label>
+                        <input 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
+                            id="first_name" 
+                            name="first_name"
+                            type="text" 
+                            placeholder="Enter your first name"
+                            required
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="last_name">
+                            Last Name
+                        </label>
+                        <input 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
+                            id="last_name" 
+                            name="last_name"
+                            type="text" 
+                            placeholder="Enter your last name"
+                            required
+                        >
+                    </div>
                 </div>
                 
                 <div>
@@ -75,7 +92,13 @@
                         name="password"
                         type="password" 
                         placeholder="Enter your password"
+                        minlength="8"
+                        required
                     >
+                    <p class="text-xs text-gray-500 mt-1">
+                        Password must contain at least 8 characters, 1 uppercase letter, and 1 special character.
+                    </p>
+                    <div id="passwordError" class="text-xs text-red-600 mt-1 hidden"></div>
                 </div>
                 
                 <button 
@@ -89,10 +112,57 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('registrationForm');
                 const btn = document.getElementById('signupBtn');
+                const passwordInput = document.getElementById('password');
+                const passwordError = document.getElementById('passwordError');
+                
+                // Password validation function
+                function validatePassword(password) {
+                    const minLength = 8;
+                    const hasUpperCase = /[A-Z]/.test(password);
+                    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                    
+                    if (password.length < minLength) {
+                        return 'Password must be at least 8 characters long.';
+                    }
+                    if (!hasUpperCase) {
+                        return 'Password must contain at least 1 uppercase letter.';
+                    }
+                    if (!hasSpecialChar) {
+                        return 'Password must contain at least 1 special character (!@#$%^&*(),.?":{}|<>).';
+                    }
+                    return '';
+                }
+                
+                // Real-time password validation
+                passwordInput.addEventListener('input', function() {
+                    const error = validatePassword(this.value);
+                    if (error) {
+                        passwordError.textContent = error;
+                        passwordError.classList.remove('hidden');
+                        passwordInput.classList.add('border-red-500');
+                        passwordInput.classList.remove('border-gray-300');
+                    } else {
+                        passwordError.classList.add('hidden');
+                        passwordInput.classList.remove('border-red-500');
+                        passwordInput.classList.add('border-gray-300');
+                    }
+                });
+                
                 form.addEventListener('submit', function(e) {
+                    const password = passwordInput.value;
+                    const error = validatePassword(password);
+                    
+                    if (error) {
+                        e.preventDefault();
+                        passwordError.textContent = error;
+                        passwordError.classList.remove('hidden');
+                        passwordInput.classList.add('border-red-500');
+                        passwordInput.focus();
+                        return false;
+                    }
+                    
                     btn.disabled = true;
                     btn.textContent = 'Creating account ...';
-                    // Wait for form to submit, then redirect after a short delay
                 });
             });
         </script>

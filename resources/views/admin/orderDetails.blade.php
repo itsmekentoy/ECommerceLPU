@@ -70,7 +70,7 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Bill To:</h3>
                         <div class="space-y-2 text-sm">
-                            <div class="font-semibold text-gray-900">{{ $order->customer->name ?? 'N/A' }}</div>
+                            <div class="font-semibold text-gray-900">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</div>
                             <div class="text-gray-600">{{ $order->customer->email ?? 'N/A' }}</div>
                             @if($order->customer && $order->customer->phone)
                                 <div class="text-gray-600">{{ $order->customer->phone }}</div>
@@ -87,7 +87,7 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Ship To:</h3>
                         <div class="space-y-2 text-sm">
-                            <div class="font-semibold text-gray-900">{{ $order->shipping_name ?? ($order->customer->name ?? 'N/A') }}</div>
+                            <div class="font-semibold text-gray-900">{{ $order->shipping_name ?? ($order->customer->first_name ?? '') }}  {{ $order->customer->last_name ?? '' }}</div>
                             @if(($order->shipping_phone ?? ($order->customer->phone ?? null)))
                                 <div class="text-gray-600">{{ $order->shipping_phone ?? $order->customer->phone }}</div>
                             @endif

@@ -20,7 +20,8 @@ class CustomerAuthentication extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',   
             'email' => 'required|string|email|max:255|unique:customer_information,email',
             'password' => 'required|string|min:8',
         ]);
@@ -44,7 +45,8 @@ class CustomerAuthentication extends Controller
         $hash_token = bin2hex(random_bytes(32)); // 64 characters
 
         $customer = CustomerInformationData::create([
-            'name' => $request->input('name'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
             'hash_token' => $hash_token,
@@ -53,7 +55,7 @@ class CustomerAuthentication extends Controller
         // send email
         $mailerService = new MailerService;
         $emailBody = view('email.confirmation', [
-            'name' => $customer->name,
+            'name' => $customer->first_name . ' ' . $customer->last_name,
             'verificationLink' => env('MYLINK').'/confirmation?email='.urlencode($customer->email).'&hashtoken='.$customer->hash_token,
         ])->render();
         $emailResult = $mailerService->sendMail($customer->email, $emailBody);
@@ -227,7 +229,8 @@ class CustomerAuthentication extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',   
             'mobile' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
         ]);
@@ -257,7 +260,8 @@ class CustomerAuthentication extends Controller
             return response()->back()->withInput();
         }
 
-        $customer->name = $request->input('name');
+        $customer->first_name = $request->input('first_name');
+        $customer->last_name = $request->input('last_name');
         $customer->phone = $request->input('mobile');
         $customer->address = $request->input('address');
         $customer->save();

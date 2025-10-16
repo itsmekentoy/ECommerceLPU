@@ -38,7 +38,7 @@
                             <!-- Thank You Message -->
                             <div style="background-color: #f8fafc; border-left: 4px solid #c2410c; padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0;">
                                 <p style="color: #374151; font-size: 16px; margin: 0; font-weight: 500;">
-                                    🎉 Thank you for creating your account!
+                                        Thank you for creating your account!
                                 </p>
                                 <p style="color: #6b7280; font-size: 14px; margin: 10px 0 0 0;">
                                     We're excited to have you join our community.
@@ -66,7 +66,7 @@
                             <!-- Additional Info -->
                             <div style="background-color: #fef3c7; border-radius: 8px; padding: 20px; margin: 30px 0;">
                                 <h3 style="color: #92400e; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">
-                                    📋 What's Next?
+                                    What's Next?
                                 </h3>
                                 <ul style="color: #a16207; font-size: 14px; margin: 0; padding-left: 20px;">
                                     <li style="margin-bottom: 5px;">Verify your email address</li>
@@ -88,19 +88,6 @@
                     <!-- Footer -->
                     <tr>
                         <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
-                            <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">
-                                Need help? Contact our support team
-                            </p>
-                            <p style="color: #6b7280; font-size: 12px; margin: 0 0 15px 0;">
-                                📧 support@habingibaan.com | 📞 +63-XXX-XXX-XXXX
-                            </p>
-                            
-                            <!-- Social Links -->
-                            <div style="margin: 15px 0;">
-                                <a href="#" style="display: inline-block; margin: 0 10px; color: #c2410c; text-decoration: none;">Facebook</a>
-                                <a href="#" style="display: inline-block; margin: 0 10px; color: #c2410c; text-decoration: none;">Website</a>
-                            </div>
-                            
                             <p style="color: #9ca3af; font-size: 11px; margin: 15px 0 0 0;">
                                 © 2024 HabingIbaan. All rights reserved.<br>
                                 123 Main Street, Ibaan, Batangas, Philippines

@@ -48,7 +48,7 @@
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ $order->customer->name }}
+                                                {{ $order->customer->first_name }} {{ $order->customer->last_name }}
                                             </div>
                                             <div class="text-sm text-gray-500">
                                                 {{ $order->customer->email }}

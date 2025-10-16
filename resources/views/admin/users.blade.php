@@ -36,13 +36,13 @@
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                                                 <span class="text-sm font-medium text-primary">
-                                                    {{ strtoupper(substr($user->name, 0, 1) . substr(strrchr($user->name, ' '), 1, 1)) }}
+                                                    {{ strtoupper(substr($user->first_name, 0, 1) . substr(strrchr($user->last_name, ' '), 1, 1)) }}
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ $user->name }}
+                                                {{ $user->first_name }} {{ $user->last_name }}
                                             </div>
                                         </div>
                                     </div>

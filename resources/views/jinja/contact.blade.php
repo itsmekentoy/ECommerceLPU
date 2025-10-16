@@ -76,10 +76,10 @@
                             
                            
                                 <div class="form-group">
-                                    <label for="firstName">First Name *</label>
+                                    <label for="firstName">Name *</label>
                                     <input type="text" id="firstName" name="firstName"
                                     @if($currentCustomer)
-                                        value="{{ $currentCustomer->name }}"
+                                        value="{{ $currentCustomer->first_name }} {{ $currentCustomer->last_name }}"
                                     @endif
                                     required>
                                     
