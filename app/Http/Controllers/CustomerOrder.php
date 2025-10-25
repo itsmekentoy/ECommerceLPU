@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\OrderDetailItem;
 use App\Models\OrderDetails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerOrder extends Controller
 {
@@ -68,7 +69,15 @@ class CustomerOrder extends Controller
 
         $validated = $request->validate([
             'delivery_address' => 'required|string|max:500',
+            'uploaded_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $imageName = null;
+        if ($request->hasFile('uploaded_image')) {
+            $image = $request->file('uploaded_image');
+            $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+        }
 
         $customerId = session('customer_id');
         $cartItems = CustomerAddtoCart::where('customer_id', $customerId)
@@ -100,6 +109,7 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
+            'payment_file_path' => $imageName,
         ]);
 
         // Create order items
@@ -132,7 +142,7 @@ class CustomerOrder extends Controller
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('Order placed successfully! Please check your email for the order details and payment instructions.');
+            ->success('Order placed successfully!');
 
         return redirect()->route('shop');
     }
@@ -174,7 +184,15 @@ class CustomerOrder extends Controller
             'delivery_address' => 'required|string|max:500',
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
+            'uploaded_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $imageName = null;
+        if ($request->hasFile('uploaded_image')) {
+            $image = $request->file('uploaded_image');
+            $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+        }
 
         $customerId = session('customer_id');
         $item = Item::findOrFail($validated['item_id']);
@@ -201,6 +219,8 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
+
+            'payment_file_path' => $imageName,
         ]);
 
         // Create order item
@@ -219,7 +239,7 @@ class CustomerOrder extends Controller
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('Order placed successfully! Please check your email for the order details and payment instructions.');
+            ->success('Order placed successfully!');
 
         return redirect()->route('shop');
     }
@@ -406,15 +426,7 @@ class CustomerOrder extends Controller
                     </table>
                 </td>
             </tr>
-            <tr>
-                <td style='padding:20px; border-top:1px solid #eee;'>
-                    <h3>Payment Instructions</h3>
-                    <p style='margin:0; color:#374151;'>
-                        Please send your payment  to this number <strong>09152236534</strong>. After payment, kindly reply to this email with a screenshot of your receipt for verification.
-                    </p>
-                    <div style='margin-top:16px; text-align:center;'>
-                </td>
-            </tr>
+            
 
             <tr>
                 <td style='background:#111827; color:#fff; padding:20px; text-align:center;'>

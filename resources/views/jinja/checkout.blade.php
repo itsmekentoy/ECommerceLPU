@@ -8,7 +8,7 @@
             <p>Review your order and complete your purchase</p>
         </div>
 
-        <form action="{{ route('order.place') }}" method="POST" class="checkout-form">
+        <form action="{{ route('order.place') }}" method="POST" class="checkout-form" enctype="multipart/form-data">
             @csrf
             
             <div class="checkout-content">
@@ -54,6 +54,30 @@
                     </div>
                 </div>
 
+                <!-- QR Code Section -->
+                <div class="qr-section">
+                    <h2>QR Code</h2>
+                    {{-- If a QR code URL is passed to the view use it; otherwise show a default placeholder in storage/qr_codes --}}
+                    <img id="qrImage" src="{{asset('imgs/gcash.jpg')}}" alt="QR Code" class="qr-code-image">
+                    <p class="qr-note">Scan this QR code with your banking app to pay. After successful payment, upload your payment receipt below to complete the order.</p>
+                </div>
+
+                <!-- Upload payment receipt with Preview -->
+                <div class="delivery-section upload-section">
+                    <h2>Upload Payment Receipt</h2>
+                    <div class="form-group">
+                        <label for="uploaded_image">Upload your payment receipt (JPEG, PNG). This will be previewed before submitting.</label>
+                        <input type="file" id="uploaded_image" name="uploaded_image" accept="image/*">
+                        <div class="upload-preview" id="uploadPreviewContainer" style="display: none;">
+                            <p style="margin:0.5rem 0 0.25rem 0; font-weight:600;">Receipt preview:</p>
+                            <img id="uploadPreview" src="#" alt="Receipt preview" class="upload-preview-image">
+                        </div>
+                        @error('uploaded_image')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
                 <!-- Delivery Address Section -->
                 <div class="delivery-section">
                     <h2>Delivery Address</h2>
@@ -84,6 +108,7 @@
                         <span>₱{{ number_format($subtotal, 2) }}</span>
                     </div>
                 </div>
+                
 
                 <!-- Action Buttons -->
                 <div class="checkout-actions">
@@ -110,6 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const placeOrderBtn = document.getElementById('placeOrderBtn');
     const placeOrderText = document.getElementById('placeOrderText');
     const placeOrderLoader = document.getElementById('placeOrderLoader');
+    const uploadedInput = document.getElementById('uploaded_image');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const uploadPreviewContainer = document.getElementById('uploadPreviewContainer');
 
     form.addEventListener('submit', function(e) {
         // Disable button to prevent multiple clicks
@@ -123,6 +151,34 @@ document.addEventListener('DOMContentLoaded', function() {
         placeOrderLoader.style.alignItems = 'center';
         placeOrderLoader.style.gap = '0.5rem';
     });
+
+    // Image upload preview
+    if (uploadedInput) {
+        uploadedInput.addEventListener('change', function() {
+            const file = this.files && this.files[0];
+            if (!file) {
+                if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'none';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file (jpg, png, etc.).');
+                this.value = '';
+                if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'none';
+                return;
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            if (uploadPreview) {
+                uploadPreview.src = objectUrl;
+                uploadPreview.onload = function() {
+                    // release memory when image is loaded
+                    URL.revokeObjectURL(objectUrl);
+                };
+            }
+            if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'block';
+        });
+    }
 });
 </script>
 
@@ -262,6 +318,43 @@ document.addEventListener('DOMContentLoaded', function() {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
+}
+
+/* QR Code and Upload Preview */
+.qr-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.qr-code-image {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    background: #fff;
+}
+
+.qr-note {
+    margin-top: 0.75rem;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.upload-preview-image {
+    max-width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: block;
+    margin-top: 0.5rem;
 }
 
 /* Delivery Section */
