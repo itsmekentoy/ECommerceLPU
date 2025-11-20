@@ -451,15 +451,7 @@ class CustomerOrder extends Controller
                     </table>
                 </td>
             </tr>
-            <tr>
-                <td style='padding:20px; border-top:1px solid #eee;'>
-                    <h3>Payment Instructions</h3>
-                    <p style='margin:0; color:#374151;'>
-                        Please send your payment  to this number <strong>09152236534</strong>. After payment, kindly reply to this email with a screenshot of your receipt for verification.
-                    </p>
-                    <div style='margin-top:16px; text-align:center;'>
-                </td>
-            </tr>
+           
 
             <tr>
                 <td style='background:#111827; color:#fff; padding:20px; text-align:center;'>
