@@ -53,7 +53,29 @@
                         @endforeach
                     </div>
                 </div>
+                <!-- QR Code Section -->
+                <div class="qr-section">
+                    <h2>QR Code</h2>
+                    {{-- If a QR code URL is passed to the view use it; otherwise show a default placeholder in storage/qr_codes --}}
+                    <img id="qrImage" src="{{asset('imgs/gcash.jpg')}}" alt="QR Code" class="qr-code-image">
+                    <p class="qr-note">Scan this QR code with your banking app to pay. After successful payment, upload your payment receipt below to complete the order.</p>
+                </div>
 
+                <!-- Upload payment receipt with Preview -->
+                <div class="delivery-section upload-section">
+                    <h2>Upload Payment Receipt</h2>
+                    <div class="form-group">
+                        <label for="uploaded_image">Upload your payment receipt (JPEG, PNG). This will be previewed before submitting.</label>
+                        <input type="file" id="uploaded_image" name="uploaded_image" accept="image/*">
+                        <div class="upload-preview" id="uploadPreviewContainer" style="display: none;">
+                            <p style="margin:0.5rem 0 0.25rem 0; font-weight:600;">Receipt preview:</p>
+                            <img id="uploadPreview" src="#" alt="Receipt preview" class="upload-preview-image">
+                        </div>
+                        @error('uploaded_image')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
                 <!-- Delivery Address Section -->
                 <div class="delivery-section">
                     <h2>Delivery Address</h2>
