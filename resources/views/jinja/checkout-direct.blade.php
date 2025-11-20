@@ -215,6 +215,36 @@ document.addEventListener('DOMContentLoaded', function() {
         placeOrderLoader.style.alignItems = 'center';
         placeOrderLoader.style.gap = '0.5rem';
     });
+    // Image upload preview for payment receipt
+    const uploadedInput = document.getElementById('uploaded_image');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const uploadPreviewContainer = document.getElementById('uploadPreviewContainer');
+
+    if (uploadedInput) {
+        uploadedInput.addEventListener('change', function() {
+            const file = this.files && this.files[0];
+            if (!file) {
+                if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'none';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file (jpg, png, etc.).');
+                this.value = '';
+                if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'none';
+                return;
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            if (uploadPreview) {
+                uploadPreview.src = objectUrl;
+                uploadPreview.onload = function() {
+                    URL.revokeObjectURL(objectUrl);
+                };
+            }
+            if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'block';
+        });
+    }
 });
 </script>
 
