@@ -286,6 +286,43 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #333;
 }
 
+/* QR Code and Upload Preview */
+.qr-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.qr-code-image {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    background: #fff;
+}
+
+.qr-note {
+    margin-top: 0.75rem;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.upload-preview-image {
+    max-width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: block;
+    margin-top: 0.5rem;
+}
+
 /* Delivery Section */
 .delivery-section {
     background: white;
