@@ -41,12 +41,13 @@ class CustomerOrder extends Controller
             return redirect()->back();
         }
 
-        // Calculate totals
+        // Calculate totals (derive from base item price + textile/customization price when present)
         $subtotal = 0;
         foreach ($cartItems as $cartItem) {
-            // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
-            $subtotal += $itemPrice * $cartItem->quantity;
+            $basePrice = $cartItem->item->price ?? 0;
+            $textilePrice = ($cartItem->textile) ? (float) $cartItem->textile->price : 0.0;
+            $unitPrice = $basePrice + $textilePrice;
+            $subtotal += $unitPrice * $cartItem->quantity;
         }
 
         $customer = CustomerInformation::find($customerId);
@@ -87,11 +88,23 @@ class CustomerOrder extends Controller
             return redirect()->back();
         }
 
-        // Calculate total amount (include any per-item custom price if present)
+        // Calculate total amount from base item price + textile/customization price (do not double-count)
         $totalAmount = 0;
         foreach ($cartItems as $cartItem) {
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
-            $totalAmount += $itemPrice * $cartItem->quantity;
+            $basePrice = $cartItem->item->price ?? 0;
+            $textilePrice = 0.0;
+            if (! empty($cartItem->customization) && $cartItem->customization > 0) {
+                $textile = TextTile::find($cartItem->customization);
+                if ($textile) {
+                    $textilePrice = (float) $textile->price;
+                }
+            } elseif ($cartItem->textile) {
+                // When relation is loaded, prefer it
+                $textilePrice = (float) $cartItem->textile->price;
+            }
+
+            $unitPrice = $basePrice + $textilePrice;
+            $totalAmount += $unitPrice * $cartItem->quantity;
         }
 
         // Create order
@@ -106,13 +119,14 @@ class CustomerOrder extends Controller
 
         // Create order items
         foreach ($cartItems as $cartItem) {
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
+            // Persist only the base item price to avoid duplicating textile/customization price later
+            $basePrice = $cartItem->item->price ?? 0;
 
             OrderDetailItem::create([
                 'order_detail_id' => $order->id,
                 'item_id' => $cartItem->item_id,
                 'quantity' => $cartItem->quantity,
-                'price' => $itemPrice,
+                'price' => $basePrice,
                 // DB column has default 0 and is not nullable; ensure we insert an integer (0 when not provided)
                 'customization_textile_id' => (int) ($cartItem->customization ?? 0),
             ]);
