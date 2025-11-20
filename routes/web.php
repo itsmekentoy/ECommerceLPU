@@ -1,0 +1,87 @@
+
+<?php
+
+use App\Http\Controllers\AddtoCart;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CustomerAuthentication;
+use App\Http\Controllers\CustomerInformation;
+use App\Http\Controllers\CustomerOrder;
+use App\Http\Controllers\LandinPageController;
+use App\Http\Controllers\ProductItemController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAuthentication;
+use App\Http\Controllers\UserConversationWithAdminController;
+use Illuminate\Support\Facades\Auth;
+
+
+
+Route::controller(CustomerAuthentication::class)->group(function () {
+    Route::get('/login', 'login')->name('login');
+    Route::post('/login', 'authenticate')->name('authenticate');
+    Route::post('/logout', 'logout')->name('logout');
+    Route::get('/register', 'register')->name('register');
+    Route::post('/register', 'store')->name('register.store');
+    Route::get('/confirmation', 'confirmEmail')->name('confirm.email');
+    Route::post('/updateProfile', 'updateProfile')->name('customer.update.profile');
+    Route::post('/uploadProfileImage', 'uploadProfileImage')->name('customer.upload.profile.image');
+    Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
+    Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/password/reset/{email}', 'resetPassword')->name('password.update');
+    Route::post('/password/change/new', 'changeNewPassword')->name('password.change.new');
+});
+
+Route::controller(LandinPageController::class)->group(function () {
+    Route::get('/', 'home')->name('home');
+    Route::get('/about', 'about')->name('about');
+    Route::get('/shop', 'shop')->name('shop');
+    Route::get('/contact', 'contact')->name('contact');
+
+});
+
+Route::get('/cart/items', [AddtoCart::class, 'fetchCartItems'])->name('cart.items');
+Route::post('/cart/add', [AddtoCart::class, 'addtoCart'])->name('add.to.cart');
+Route::post('/cart/update', [AddtoCart::class, 'updateCartItem'])->name('update.cart.item');
+Route::delete('/cart/remove', [AddtoCart::class, 'removeItemFromCart'])->name('remove.cart.item');
+Route::get('/api/items-by-category/{categoryId}', [LandinPageController::class, 'getItemsByCategory'])->name('items.by.category');
+Route::get('/item/checkout', [CustomerOrder::class, 'checkout'])->name('item.checkout');
+Route::get('/item/direct-checkout', [CustomerOrder::class, 'directCheckout'])->name('item.direct.checkout');
+Route::post('/order/place', [CustomerOrder::class, 'placeOrder'])->name('order.place');
+Route::post('/order/place-direct', [CustomerOrder::class, 'placeDirectOrder'])->name('order.place.direct');
+Route::get('/customer/orders', [CustomerOrder::class, 'ListOrders'])->name('customer.orders');
+Route::get('/customer/order/{id}', [CustomerOrder::class, 'viewOrder'])->name('customer.view.order');
+Route::post('updateOrderStatus/', [CustomerOrder::class, 'updateOrderStatus'])->name('admin.update.order.status');
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin/dashboard', 'index')->name('admin.index')->middleware('auth:admin');
+    Route::get('textile', 'texttile')->name('admin.texttile');
+    Route::post('/admin/textile/create', 'createTexttile')->name('admin.texttile.create')->middleware('auth:admin');
+    Route::post('/admin/textile/{id}/update', 'updateTexttile')->name('admin.texttile.update')->middleware('auth:admin');
+    Route::delete('/admin/textile/{id}/delete', 'deleteTexttile')->name('admin.texttile.delete')->middleware('auth:admin');
+    Route::get('/admin/users', 'users')->name('admin.users');
+    Route::post('/admin/printOrderItemsPerCategory', 'printOrderItemsPerCategory')->name('admin.printOrderItemsPerCategory');
+});
+
+Route::controller(ProductItemController::class)->group(function () {
+    Route::get('/admin/inventory', 'inventory')->name('admin.inventory')->middleware('auth:admin');
+    Route::post('/admin/addItem', 'CreateProduct')->name('admin.add.item')->middleware('auth:admin');
+    Route::delete('admin/{id}/deleteItem', 'DeleteItem')->name('admin.delete.item')->middleware('auth:admin');
+    Route::post('admin/{id}/updateItem', 'UpdateItem')->name('admin.update.item')->middleware('auth:admin');
+});
+
+Route::controller(CustomerInformation::class)->group(function () {
+    Route::get('/admin/customers', 'index')->name('admin.customers')->middleware('auth:admin');
+});
+
+// Conversation message AJAX routes
+use App\Http\Controllers\ConversationMessageController;
+
+Route::post('/conversation/messages/fetch', [ConversationMessageController::class, 'fetch'])->name('conversation.fetch');
+Route::post('/conversation/messages/send', [ConversationMessageController::class, 'send'])->name('conversation.send');
+
+
+Route::post('/conversation/get-or-create', [UserConversationWithAdminController::class, 'getOrCreate'])->name('conversation.getOrCreate');
+
+    Route::controller(AdminAuthentication::class)->group(function () {
+        Route::get('/admin/login', 'showLoginForm')->name('admin.login');
+        Route::post('/admin/login', 'login')->name('admin.authenticate');
+        Route::get('/admin/logout', 'logout')->name('admin.logout');
+    });
