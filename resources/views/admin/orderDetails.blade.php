@@ -9,7 +9,10 @@
         <!-- Receipt Container -->
         <div class="bg-white shadow-lg rounded-lg overflow-hidden" id="receipt">
             <!-- Company Header -->
-           
+
+            <!-- Two-column layout: left = order details (unchanged), right = payment image -->
+            <div class="md:flex md:space-x-6">
+                <div class="md:flex-1 min-w-0">
 
             <!-- Invoice Header -->
             <div class="p-8 border-b border-gray-200">
@@ -65,18 +68,18 @@
 
             <!-- Customer Information -->
             <div class="p-8 border-b border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                     <!-- Billing Information -->
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Bill To:</h3>
                         <div class="space-y-2 text-sm">
                             <div class="font-semibold text-gray-900">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</div>
-                            <div class="text-gray-600">{{ $order->customer->email ?? 'N/A' }}</div>
+                            <div class="text-gray-600 break-words whitespace-normal" style="overflow-wrap:break-word; word-break:break-word;">{{ $order->customer->email ?? 'N/A' }}</div>
                             @if($order->customer && $order->customer->phone)
                                 <div class="text-gray-600">{{ $order->customer->phone }}</div>
                             @endif
                             @if($order->customer && $order->customer->address)
-                                <div class="text-gray-600 leading-relaxed">
+                                <div class="text-gray-600 leading-relaxed break-words whitespace-normal" style="overflow-wrap:break-word; word-break:break-word;">
                                     {{ $order->customer->address }}
                                 </div>
                             @endif
@@ -91,7 +94,7 @@
                             @if(($order->shipping_phone ?? ($order->customer->phone ?? null)))
                                 <div class="text-gray-600">{{ $order->shipping_phone ?? $order->customer->phone }}</div>
                             @endif
-                            <div class="text-gray-600 leading-relaxed">
+                            <div class="text-gray-600 leading-relaxed break-words whitespace-normal" style="overflow-wrap:break-word; word-break:break-word;">
                                 {{ $order->shipping_address ?? ($order->customer->address ?? 'Same as billing address') }}
                             </div>
                         </div>
@@ -212,6 +215,23 @@
                     @endif
                 </div>
             @endif
+
+                </div> <!-- end left column -->
+
+                <!-- Right column: Payment Image -->
+                <div class="md:w-64 md:flex-shrink-0 p-6 border-l border-gray-200 bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Receipt</h3>
+                    @if(!empty($order->payment_file_path))
+                        <div class="mb-3">
+                            <img src="{{ $order->payment_file_path }}" alt="Payment Receipt" class="w-full rounded shadow">
+                        </div>
+                        <a href="{{ $order->payment_file_path }}" target="_blank" class="inline-block text-sm text-blue-600 hover:underline">View full image</a>
+                    @else
+                        <div class="text-sm text-gray-600">No payment receipt uploaded.</div>
+                    @endif
+                </div>
+
+            </div> <!-- end two-column wrapper -->
 
             <!-- Footer -->
             <div class="p-8  text-white text-center">

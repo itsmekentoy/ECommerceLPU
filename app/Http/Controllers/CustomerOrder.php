@@ -9,6 +9,7 @@ use App\Models\OrderDetailItem;
 use App\Models\OrderDetails;
 use App\Models\TextTile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerOrder extends Controller
 {
@@ -41,12 +42,13 @@ class CustomerOrder extends Controller
             return redirect()->back();
         }
 
-        // Calculate totals
+        // Calculate totals (derive from base item price + textile/customization price when present)
         $subtotal = 0;
         foreach ($cartItems as $cartItem) {
-            // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
-            $subtotal += $itemPrice * $cartItem->quantity;
+            $basePrice = $cartItem->item->price ?? 0;
+            $textilePrice = ($cartItem->textile) ? (float) $cartItem->textile->price : 0.0;
+            $unitPrice = $basePrice + $textilePrice;
+            $subtotal += $unitPrice * $cartItem->quantity;
         }
 
         $customer = CustomerInformation::find($customerId);
@@ -69,7 +71,15 @@ class CustomerOrder extends Controller
 
         $validated = $request->validate([
             'delivery_address' => 'required|string|max:500',
+            'uploaded_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $imageName = null;
+        if ($request->hasFile('uploaded_image')) {
+            $image = $request->file('uploaded_image');
+            $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+        }
 
         $customerId = session('customer_id');
         $cartItems = CustomerAddtoCart::where('customer_id', $customerId)
@@ -87,11 +97,23 @@ class CustomerOrder extends Controller
             return redirect()->back();
         }
 
-        // Calculate total amount (include any per-item custom price if present)
+        // Calculate total amount from base item price + textile/customization price (do not double-count)
         $totalAmount = 0;
         foreach ($cartItems as $cartItem) {
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
-            $totalAmount += $itemPrice * $cartItem->quantity;
+            $basePrice = $cartItem->item->price ?? 0;
+            $textilePrice = 0.0;
+            if (! empty($cartItem->customization) && $cartItem->customization > 0) {
+                $textile = TextTile::find($cartItem->customization);
+                if ($textile) {
+                    $textilePrice = (float) $textile->price;
+                }
+            } elseif ($cartItem->textile) {
+                // When relation is loaded, prefer it
+                $textilePrice = (float) $cartItem->textile->price;
+            }
+
+            $unitPrice = $basePrice + $textilePrice;
+            $totalAmount += $unitPrice * $cartItem->quantity;
         }
 
         // Create order
@@ -102,17 +124,19 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
+            'payment_file_path' => $imageName,
         ]);
 
         // Create order items
         foreach ($cartItems as $cartItem) {
-            $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
+            // Persist only the base item price to avoid duplicating textile/customization price later
+            $basePrice = $cartItem->item->price ?? 0;
 
             OrderDetailItem::create([
                 'order_detail_id' => $order->id,
                 'item_id' => $cartItem->item_id,
                 'quantity' => $cartItem->quantity,
-                'price' => $itemPrice,
+                'price' => $basePrice,
                 // DB column has default 0 and is not nullable; ensure we insert an integer (0 when not provided)
                 'customization_textile_id' => (int) ($cartItem->customization ?? 0),
             ]);
@@ -180,7 +204,15 @@ class CustomerOrder extends Controller
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
             'customization' => 'nullable|exists:text_tiles,id',
+            'uploaded_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $imageName = null;
+        if ($request->hasFile('uploaded_image')) {
+            $image = $request->file('uploaded_image');
+            $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+        }
 
         $customerId = session('customer_id');
         $item = Item::findOrFail($validated['item_id']);
@@ -216,6 +248,7 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
+            'payment_file_path' => $imageName,
         ]);
 
         // Create order item (persist customization_textile_id if provided)
@@ -437,15 +470,7 @@ class CustomerOrder extends Controller
                     </table>
                 </td>
             </tr>
-            <tr>
-                <td style='padding:20px; border-top:1px solid #eee;'>
-                    <h3>Payment Instructions</h3>
-                    <p style='margin:0; color:#374151;'>
-                        Please send your payment  to this number <strong>09152236534</strong>. After payment, kindly reply to this email with a screenshot of your receipt for verification.
-                    </p>
-                    <div style='margin-top:16px; text-align:center;'>
-                </td>
-            </tr>
+           
 
             <tr>
                 <td style='background:#111827; color:#fff; padding:20px; text-align:center;'>
