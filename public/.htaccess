@@ -1,4 +1,10 @@
 <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ ../storage/app/public/$1 [L]
+</IfModule>
+
+<IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -22,11 +28,4 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
-</IfModule>
-<IfModule mod_rewrite.c>
-    Options -Indexes
-    RewriteEngine On
-
-    # Allow access to storage folder
-    RewriteRule ^storage/(.*)$ /public/storage/$1 [L]
 </IfModule>
