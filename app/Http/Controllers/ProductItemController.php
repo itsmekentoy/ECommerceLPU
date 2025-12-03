@@ -63,7 +63,7 @@ class ProductItemController extends Controller
             'price' => $request->input('price'),
             'stock' => $request->input('stock_quantity'),
             'item_type_id' => $request->input('product_type'),
-            'file_path' => $path,
+            'file_path' => Storage::disk('s3')->url($path),
             'is_featured' => $request->input('is_featured', false),
         ]);
 

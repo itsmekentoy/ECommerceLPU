@@ -28,9 +28,9 @@ class Item extends Model
     }
 
     //return s3 url of the item image
-    public function getImageUrlAttribute()
-    {
-        return Storage::disk('s3')->url($this->file_path);
-    }
+    // public function getImageUrlAttribute()
+    // {
+    //     return Storage::disk('s3')->url($this->file_path);
+    // }
 
 }
