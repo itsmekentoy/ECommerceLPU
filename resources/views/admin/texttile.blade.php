@@ -29,7 +29,7 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($texttile->file_path)
-                                        <img src="{{ asset('storage/texttiles/' . $texttile->file_path) }}" 
+                                        <img src="{{  $texttile->file_path }}" 
                                             alt="{{ $texttile->title }}" 
                                             class="w-16 h-16 object-cover rounded-lg shadow-sm">
                                     @else

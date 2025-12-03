@@ -17,16 +17,20 @@
                     <h2>Order Item/s</h2>
                     <div class="order-items-list">
                         @foreach($cartItems as $cartItem)
+                        @php
+                            // Safely get related item and avoid null property access
+                            $item = $cartItem->item ?? null;
+                        @endphp
                         <div class="checkout-item">
-                            <img src="{{ $cartItem->item->file_path }}" 
-                                 alt="{{ $cartItem->item->item_name }}" 
+                            <img src="{{ ($item && $item->file_path) ? $item->file_path : asset('imgs/placeholder.png') }}" 
+                                 alt="{{ ($item && $item->item_name) ? $item->item_name : 'Unknown item' }}" 
                                  class="checkout-item-image">
                             <div class="checkout-item-details">
-                                <h3>{{ $cartItem->item->item_name }}</h3>
+                                <h3>{{ $item->item_name ?? 'Unknown item' }}</h3>
                                 
                                 @if($cartItem->customization && $cartItem->textile)
                                     {{-- Customized item with textile --}}
-                                    <p class="item-price">₱{{ number_format($cartItem->item->price, 2) }}</p>
+                                    <p class="item-price">₱{{ number_format($item->price ?? 0, 2) }}</p>
                                     <div class="textile-subitem">
                                         <span class="textile-label">+ {{ $cartItem->textile->title }}</span>
                                         <span class="textile-price">₱{{ number_format($cartItem->textile->price, 2) }}</span>
@@ -36,15 +40,15 @@
                                     </p>
                                 @else
                                     {{-- Regular item without customization --}}
-                                    <p class="item-price">₱{{ number_format($cartItem->item->price, 2) }}</p>
+                                    <p class="item-price">₱{{ number_format($item->price ?? 0, 2) }}</p>
                                 @endif
                                 
                                 <p class="item-quantity">Quantity: {{ $cartItem->quantity }}</p>
                             </div>
                             <div class="checkout-item-total">
                                 @php
-                                    // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price
-                                    $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : $cartItem->item->price;
+                                    // Use cart item's price if it exists and is greater than 0 (for customized items), otherwise use item price (safe default 0)
+                                    $itemPrice = ($cartItem->price && $cartItem->price > 0) ? $cartItem->price : ($item->price ?? 0);
                                     $itemSubtotal = $itemPrice * $cartItem->quantity;
                                 @endphp
                                 <p class="item-subtotal">₱{{ number_format($itemSubtotal, 2) }}</p>
