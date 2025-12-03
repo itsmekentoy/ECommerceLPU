@@ -51,7 +51,7 @@ class ProductItemController extends Controller
             $imageName = uniqid('product_', true).'.'.$image->getClientOriginalExtension();
 
             // Save to storage/app/public/products
-            Storage::disk('public')->putFileAs('products', $image, $imageName);
+            $path = Storage::disk('s3')->putFileAs('products', $image, $imageName,'public');
 
         } else {
             $imageName = null;
@@ -63,7 +63,7 @@ class ProductItemController extends Controller
             'price' => $request->input('price'),
             'stock' => $request->input('stock_quantity'),
             'item_type_id' => $request->input('product_type'),
-            'file_path' => $imageName,
+            'file_path' => $path,
             'is_featured' => $request->input('is_featured', false),
         ]);
 
