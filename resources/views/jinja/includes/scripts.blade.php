@@ -109,7 +109,7 @@
         // Set product details in modal
         document.getElementById('modalProductName').textContent = productName;
         document.getElementById('modalProductPrice').textContent = '₱' + parseFloat(productPrice).toFixed(2);
-        document.getElementById('modalProductImage').src = '/storage/products/' + productImage;
+        document.getElementById('modalProductImage').src =  productImage;
         document.getElementById('modalProductStock').textContent = stock;
         document.getElementById('modalProductDescription').textContent = description || 'No description available.';
         document.getElementById('modalQuantity').value = 1;
@@ -333,7 +333,7 @@
             item_name: productName,
             price: parseFloat(productPrice),
             quantity: quantity,
-            image: productImage.split('/storage/products/')[1], // Get just the filename
+            image: productImage, // Store the full image URL
             timestamp: Date.now()
         };
 
