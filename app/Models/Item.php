@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Item extends Model
 {
@@ -25,4 +26,11 @@ class Item extends Model
     public function OrderItem(){
         return $this->belongTo(OrderDetailItem::class, 'item_id');
     }
+
+    //return s3 url of the item image
+    public function getImageUrlAttribute()
+    {
+        return Storage::disk('s3')->url($this->file_path);
+    }
+
 }
