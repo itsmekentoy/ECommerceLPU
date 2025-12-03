@@ -346,7 +346,7 @@ function loadProductsByCategory(categoryId) {
                     
                     html += `
                         <div class="product-card-custom">
-                            <img src="/storage/products/${item.file_path}" alt="${item.item_name}" class="product-image-custom">
+                            <img src="${item.file_path}" alt="${item.item_name}" class="product-image-custom">
                             <div class="product-info-custom">
                                 <h5>${item.item_name}</h5>
                                 <div class="price-breakdown">

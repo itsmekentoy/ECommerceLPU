@@ -18,7 +18,7 @@
                     <div class="order-items-list">
                         @foreach($cartItems as $cartItem)
                         <div class="checkout-item">
-                            <img src="{{ asset('storage/products/' . $cartItem->item->file_path) }}" 
+                            <img src="{{ $cartItem->item->file_path }}" 
                                  alt="{{ $cartItem->item->item_name }}" 
                                  class="checkout-item-image">
                             <div class="checkout-item-details">

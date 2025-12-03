@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Build the item HTML with optional textile customization
     let itemHTML = `
         <div class="checkout-item">
-            <img src="/storage/products/${item.image}" 
+            <img src="${item.image}" 
                  alt="${item.item_name}" 
                  class="checkout-item-image">
             <div class="checkout-item-details">

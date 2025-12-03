@@ -118,7 +118,7 @@ function loadCart() {
         name: cartItem.item.item_name,
         price: itemPrice,
         original_price: parseFloat(cartItem.item.price),
-        image: "/storage/products/" + cartItem.item.file_path,
+        image: cartItem.item.file_path,
         quantity: cartItem.quantity,
         customization: cartItem.customization,
         textile: cartItem.textile ? cartItem.textile.title : null,
