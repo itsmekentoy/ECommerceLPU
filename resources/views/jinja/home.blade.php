@@ -48,7 +48,7 @@
             <div class="featured-grid">
                 @foreach($featuredItems as $item)
                 <div class="product-card">
-                    <img src="{{ asset('storage/products/' . $item->file_path) }}" alt="{{ $item->item_name }}">
+                    <img src="{{ $item->file_path }}" alt="{{ $item->item_name }}">
                     <div class="product-info">
                         <h3>{{ $item->item_name }}</h3>
                         <p class="product-description" title="{{ $item->description }}">{{ $item->description }}</p> 

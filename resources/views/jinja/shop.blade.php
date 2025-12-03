@@ -63,7 +63,7 @@
                              data-category="{{ $itemType->id }}"
                              data-type="{{ strtolower($itemType->type_name) }}">
                             <!-- Product Image -->
-                            <img src="{{ asset('storage/products/' . $item->file_path) }}"
+                            <img src="{{ $item->file_path }}"
                                  alt="{{ $item->item_name }}"
                                  class="w-full h-48 object-cover rounded"
                                  style="margin-top: 10px;">
@@ -104,7 +104,7 @@
                 <div class="textile-grid">
                     @foreach($textiles as $textile)
                     <div class="textile-card" onclick="selectTextile({{ $textile->id }}, '{{ $textile->title }}', {{ $textile->price }}, '{{ $textile->file_path }}')">
-                        <img src="{{ asset('storage/texttiles/' . $textile->file_path) }}" alt="{{ $textile->title }}" class="textile-image">
+                        <img src="{{ $textile->file_path }}" alt="{{ $textile->title }}" class="textile-image">
                         <div class="textile-info">
                             <h5>{{ $textile->title }}</h5>
                             <p class="textile-price">₱{{ number_format($textile->price, 2) }}</p>

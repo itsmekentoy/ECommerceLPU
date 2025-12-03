@@ -31,7 +31,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($item->file_path)
-                                <img src="{{ asset('storage/products/' . $item->file_path) }}" 
+                                <img src="{{ $item->file_path }}" 
                                     alt="{{ $item->item_name }}" 
                                     class="w-16 h-16 object-cover">
                             @else
