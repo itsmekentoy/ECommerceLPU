@@ -78,7 +78,7 @@ class CustomerOrder extends Controller
         if ($request->hasFile('uploaded_image')) {
             $image = $request->file('uploaded_image');
             $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+            $path = Storage::disk('s3')->putFileAs('payments', $image, $imageName,'public');
         }
 
         $customerId = session('customer_id');
@@ -124,7 +124,7 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
-            'payment_file_path' => $imageName,
+            'payment_file_path' => Storage::disk('s3')->url($path),
         ]);
 
         // Create order items
@@ -211,7 +211,7 @@ class CustomerOrder extends Controller
         if ($request->hasFile('uploaded_image')) {
             $image = $request->file('uploaded_image');
             $imageName = 'payment_receipt_' . time() . '.' . $image->getClientOriginalExtension();
-            Storage::disk('public')->putFileAs('payments', $image, $imageName);
+            $path = Storage::disk('s3')->putFileAs('payments', $image, $imageName,'public');
         }
 
         $customerId = session('customer_id');
@@ -248,7 +248,7 @@ class CustomerOrder extends Controller
             'status' => '1',
             'order_code' => $orderCode,
             'delivery_address' => $validated['delivery_address'],
-            'payment_file_path' => $imageName,
+            'payment_file_path' => Storage::disk('s3')->url($path),
         ]);
 
         // Create order item (persist customization_textile_id if provided)

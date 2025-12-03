@@ -122,7 +122,7 @@ class ProductItemController extends Controller
             $imageName = uniqid('product_', true).'.'.$image->getClientOriginalExtension();
 
             // Save to storage/app/public/products
-            Storage::disk('public')->putFileAs('products', $image, $imageName);
+            $path =Storage::disk('s3')->putFileAs('products', $image, $imageName,'public');
 
             // Delete old image if exists
             if ($item->file_path && Storage::exists('public/products/'.$item->file_path)) {
@@ -130,7 +130,7 @@ class ProductItemController extends Controller
             }
 
             // Update file_path
-            $item->file_path = $imageName;
+            $item->file_path = Storage::disk('s3')->url($path);
         }
 
         // Update other fields
@@ -156,8 +156,8 @@ class ProductItemController extends Controller
     {
         $item = Item::find($id);
         // Delete image if exists
-        if ($item && $item->file_path && Storage::exists('public/products/'.$item->file_path)) {
-            Storage::disk('public')->delete('products/'.$item->file_path);
+        if ($item && $item->file_path && Storage::disk('s3')->exists($item->file_path)) {
+            Storage::disk('s3')->delete($item->file_path);
         }
 
         // Delete item record
