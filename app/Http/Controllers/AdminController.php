@@ -120,14 +120,14 @@ class AdminController extends Controller
             $imageName = uniqid('texttile_', true) . '.' . $image->getClientOriginalExtension();
             
             // Save to storage/app/public/texttiles
-            Storage::disk('public')->putFileAs('texttiles', $image, $imageName);
+            $path = Storage::disk('s3')->putFileAs('texttiles', $image, $imageName,'public');
         }
 
         // Create the texttile
         $texttile = TextTile::create([
             'title' => $request->input('texttile_name'),
             'price' => $request->input('texttile_price'),
-            'file_path' => $imageName,
+            'file_path' => Storage::disk('s3')->url($path),
         ]);
 
         // Create the relationships with item types
@@ -184,7 +184,7 @@ class AdminController extends Controller
         if ($request->hasFile('texttile_image')) {
             // Delete old image if exists
             if ($texttile->file_path) {
-                Storage::disk('public')->delete('texttiles/' . $texttile->file_path);
+                Storage::disk('s3')->delete('texttiles/' . $texttile->file_path);
             }
 
             $image = $request->file('texttile_image');
@@ -193,9 +193,9 @@ class AdminController extends Controller
             $imageName = uniqid('texttile_', true) . '.' . $image->getClientOriginalExtension();
             
             // Save to storage/app/public/texttiles
-            Storage::disk('public')->putFileAs('texttiles', $image, $imageName);
+            $path = Storage::disk('s3')->putFileAs('texttiles', $image, $imageName,'public');
             
-            $texttile->file_path = $imageName;
+            $texttile->file_path = Storage::disk('s3')->url($path);
         }
 
         // Update the texttile
@@ -232,7 +232,7 @@ class AdminController extends Controller
 
             // Delete the image file if exists
             if ($texttile->file_path) {
-                Storage::disk('public')->delete('texttiles/' . $texttile->file_path);
+                Storage::disk('s3')->delete('texttiles/' . $texttile->file_path);
             }
 
             // Delete relationships
