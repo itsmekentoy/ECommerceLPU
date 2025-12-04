@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         *{
             font-family: 'Poppins';
@@ -60,16 +61,26 @@
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
                         Password
                     </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="password" 
-                        name="password"
-                        type="password" 
-                        placeholder="Enter your password"
-                    >
-                <div class="flex justify-end mt-2">
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot Password?</a>
-                </div>
+                    <div class="relative">
+                        <input 
+                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
+                            id="password" 
+                            name="password"
+                            type="password" 
+                            placeholder="Enter your password"
+                        >
+                        <button 
+                            type="button" 
+                            id="togglePassword" 
+                            class="absolute right-4 top-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                            onclick="togglePasswordVisibility()"
+                        >
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-end mt-2">
+                        <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot Password?</a>
+                    </div>
                 </div>
                 
                 <button 
@@ -91,6 +102,21 @@
                     btn.textContent = 'Logging in...';
                 });
             });
+
+            function togglePasswordVisibility() {
+                const passwordInput = document.getElementById('password');
+                const passwordIcon = document.getElementById('passwordIcon');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                }
+            }
         </script>
                 
                 <p class="text-center text-gray-600 text-sm">

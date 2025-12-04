@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\ItemType;
+use App\Models\CarouselItem;
 
 class LandinPageController extends Controller
 {
     public function home()
     {
+        $carouselItems = CarouselItem::getActive();
         $featuredItems = Item::where('is_featured', true)->get();
 
-        return view('jinja.home', compact('featuredItems'));
+        return view('jinja.home', compact('carouselItems', 'featuredItems'));
     }
 
     public function about()

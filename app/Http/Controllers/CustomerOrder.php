@@ -283,6 +283,44 @@ class CustomerOrder extends Controller
         return view('admin.orders', compact('orders'));
     }
 
+    public function fetchOrders()
+    {
+        if (!session()->has('customer_id')) {
+            return response()->json(['orders' => []], 200);
+        }
+
+        $customerId = session('customer_id');
+        $orders = OrderDetails::where('customer_id', $customerId)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'order_code' => $order->order_code,
+                    'status' => $this->getStatusLabel($order->status),
+                    'total_amount' => $order->total_amount,
+                    'delivery_address' => $order->delivery_address,
+                    'created_at' => $order->created_at,
+                ];
+            });
+
+        return response()->json(['orders' => $orders], 200);
+    }
+
+    private function getStatusLabel($status)
+    {
+        $statusMap = [
+            '1' => 'pending',
+            '2' => 'processing',
+            '3' => 'shipped',
+            '4' => 'delivered',
+            '5' => 'cancelled',
+            '6' => 'refunded',
+        ];
+
+        return $statusMap[$status] ?? 'unknown';
+    }
+
     public function updateOrderStatus(Request $request)
     {
         $validated = $request->validate([

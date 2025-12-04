@@ -5,6 +5,17 @@
     <section class="hero-carousel">
         <div class="carousel-container">
             <div class="carousel-slides" id="carouselSlides">
+                @forelse($carouselItems as $index => $item)
+                <div class="slide {{ $index === 0 ? 'active' : '' }}">
+                    <img src="{{ $item->getImageUrlAttribute() }}" alt="{{ $item->title }}">
+                    <div class="slide-content">
+                        <h1>{{ $item->title }}</h1>
+                        <p>{{ $item->subtitle ?? '' }}</p>
+                        <a href="{{ route('shop') }}" class="cta-btn">Shop Now</a>
+                    </div>
+                </div>
+                @empty
+                <!-- Fallback carousel if no items exist -->
                 <div class="slide active">
                     <img src="{{ asset('imgs/image1.jpg') }}" alt="Local Products">
                     <div class="slide-content">
@@ -29,13 +40,18 @@
                         <a href="{{ route('shop') }}" class="cta-btn">Order Fresh</a>
                     </div>
                 </div>
+                @endforelse
             </div>
             <button class="carousel-btn prev" onclick="changeSlide(-1)">&#10094;</button>
             <button class="carousel-btn next" onclick="changeSlide(1)">&#10095;</button>
             <div class="carousel-dots">
+                @forelse($carouselItems as $index => $item)
+                <span class="dot {{ $index === 0 ? 'active' : '' }}" onclick="currentSlide({{ $index + 1 }})"></span>
+                @empty
                 <span class="dot active" onclick="currentSlide(1)"></span>
                 <span class="dot" onclick="currentSlide(2)"></span>
                 <span class="dot" onclick="currentSlide(3)"></span>
+                @endforelse
             </div>
         </div>
     </section>

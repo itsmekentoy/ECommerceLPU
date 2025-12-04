@@ -1776,6 +1776,7 @@ h6 {
   .mobile-cart-btn,
   .mobile-profile-btn,
   .mobile-chat-btn,
+  .mobile-orders-btn,
   .mobile-login-btn {
     width: 100%;
     display: flex;
@@ -1797,6 +1798,7 @@ h6 {
   .mobile-cart-btn:hover,
   .mobile-profile-btn:hover,
   .mobile-chat-btn:hover,
+  .mobile-orders-btn:hover,
   .mobile-login-btn:hover {
     background: var(--primary);
     color: #fff;

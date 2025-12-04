@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         *{
             font-family: 'Poppins';
@@ -36,7 +37,7 @@
 
             <h3>Login</h3>
             <p class="text-gray-600 mb-6">
-                Please enter your email and password to log in.
+                Please enter password to log in.
             </p>
 
             <form class="space-y-6" method="POST" action="{{ route('password.change.new') }}" id="loginForm">
@@ -47,13 +48,29 @@
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
                         New Password
                     </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="email" 
-                        name="new_password"
-                        type="password"
-                        placeholder="Enter your new password"
-                    >
+                    <div class="relative">
+                        <input 
+                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
+                            id="new_password" 
+                            name="new_password"
+                            type="password"
+                            placeholder="Enter your new password"
+                            minlength="8"
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            id="togglePassword" 
+                            class="absolute right-4 top-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                            onclick="togglePasswordVisibility()"
+                        >
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Password must contain at least 8 characters, 1 uppercase letter, and 1 special character.
+                    </p>
+                    <div id="passwordError" class="text-xs text-red-600 mt-1 hidden"></div>
                     <input type="hidden" name="email" value="{{ $email }}">
                 </div>
                 
@@ -75,11 +92,74 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('loginForm');
                 const btn = document.getElementById('loginBtn');
-                form.addEventListener('submit', function() {
+                const passwordInput = document.getElementById('new_password');
+                const passwordError = document.getElementById('passwordError');
+                
+                // Password validation function
+                function validatePassword(password) {
+                    const minLength = 8;
+                    const hasUpperCase = /[A-Z]/.test(password);
+                    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                    
+                    if (password.length < minLength) {
+                        return 'Password must be at least 8 characters long.';
+                    }
+                    if (!hasUpperCase) {
+                        return 'Password must contain at least 1 uppercase letter.';
+                    }
+                    if (!hasSpecialChar) {
+                        return 'Password must contain at least 1 special character (!@#$%^&*(),.?":{}|<>).';
+                    }
+                    return '';
+                }
+                
+                // Real-time password validation
+                passwordInput.addEventListener('input', function() {
+                    const error = validatePassword(this.value);
+                    if (error) {
+                        passwordError.textContent = error;
+                        passwordError.classList.remove('hidden');
+                        passwordInput.classList.add('border-red-500');
+                        passwordInput.classList.remove('border-gray-300');
+                    } else {
+                        passwordError.classList.add('hidden');
+                        passwordInput.classList.remove('border-red-500');
+                        passwordInput.classList.add('border-gray-300');
+                    }
+                });
+                
+                form.addEventListener('submit', function(e) {
+                    const password = passwordInput.value;
+                    const error = validatePassword(password);
+                    
+                    if (error) {
+                        e.preventDefault();
+                        passwordError.textContent = error;
+                        passwordError.classList.remove('hidden');
+                        passwordInput.classList.add('border-red-500');
+                        passwordInput.focus();
+                        return false;
+                    }
+                    
                     btn.disabled = true;
                     btn.textContent = 'Loading...';
                 });
             });
+
+            function togglePasswordVisibility() {
+                const passwordInput = document.getElementById('new_password');
+                const passwordIcon = document.getElementById('passwordIcon');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                }
+            }
         </script>
                 
                 

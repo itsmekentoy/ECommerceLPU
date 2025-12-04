@@ -200,17 +200,42 @@ class CustomerAuthentication extends Controller
             return redirect()->back()->withInput();
         }
 
-        // Log the user in
-        session(['customer_id' => $customer->id]);
+        // Generate and send OTP
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $customer->otp_code = $otp;
+        $customer->otp_expires_at = now()->addMinutes(10);
+        $customer->is_otp_verified = false;
+        $customer->save();
+
+        // Send OTP email
+        $mailerService = new MailerService;
+        $emailBody = view('email.otp', [
+            'otp' => $otp,
+        ])->render();
+        $emailResult = $mailerService->sendMail($customer->email, $emailBody);
+
+        if ($emailResult !== true) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Failed to send verification code. Please try again later.');
+
+            return redirect()->back()->withInput();
+        }
+
+        // Store email in session temporarily for OTP verification
+        session(['pending_customer_email' => $customer->email]);
 
         notyf()
             ->duration(2000)
             ->position('x', 'center')
             ->position('y', 'top')
             ->dismissible(true)
-            ->success('Login successful!');
+            ->success('Verification code sent to your email!');
 
-        return redirect()->route('home');
+        return redirect()->route('otp.verify.page', ['email' => $customer->email]);
     }
 
     public function updateProfile(Request $request)
@@ -343,7 +368,7 @@ class CustomerAuthentication extends Controller
             ->dismissible(true)
             ->success('Logged out successfully!');
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
     public function showLinkRequestForm()
     {
@@ -434,7 +459,125 @@ class CustomerAuthentication extends Controller
         return redirect()->route('login');
     }
 
+    public function otpVerifyPage(Request $request)
+    {
+        $email = $request->query('email');
+        
+        if (!$email || session('pending_customer_email') !== $email) {
+            notyf()
+                ->duration(2000)
+                ->position('x', 'center')
+                ->position('y', 'top')
+                ->dismissible(true)
+                ->error('Invalid verification request.');
 
+            return redirect()->route('login');
+        }
+
+        return view('jinja.otp-verify', ['email' => $email]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|array|size:6',
+        ]);
+
+        $email = $request->input('email');
+        $otpArray = $request->input('otp');
+        $otpCode = implode('', $otpArray);
+
+        // Verify session
+        if (session('pending_customer_email') !== $email) {
+            return redirect()->route('login')->withErrors(['otp' => 'Invalid verification request.']);
+        }
+
+        $customer = CustomerInformationData::where('email', $email)->first();
+
+        if (!$customer) {
+            return redirect()->route('login')->withErrors(['otp' => 'User not found.']);
+        }
+
+        // Check if OTP is expired
+        if (!$customer->otp_expires_at || now()->isAfter($customer->otp_expires_at)) {
+            return redirect()->back()->withErrors(['otp' => 'Verification code has expired. Please request a new one.']);
+        }
+
+        // Verify OTP code
+        if ($customer->otp_code !== $otpCode) {
+            return redirect()->back()->withErrors(['otp' => 'Invalid verification code. Please try again.']);
+        }
+
+        // OTP verified successfully
+        $customer->otp_code = null;
+        $customer->otp_expires_at = null;
+        $customer->is_otp_verified = true;
+        $customer->save();
+
+        // Log the user in
+        session(['customer_id' => $customer->id]);
+        session()->forget('pending_customer_email');
+
+        notyf()
+            ->duration(2000)
+            ->position('x', 'center')
+            ->position('y', 'top')
+            ->dismissible(true)
+            ->success('Login successful!');
+
+        return redirect()->route('home');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $email = $request->input('email');
+
+        // Verify session
+        if (session('pending_customer_email') !== $email) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid verification request.'
+            ], 403);
+        }
+
+        $customer = CustomerInformationData::where('email', $email)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        // Generate new OTP
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $customer->otp_code = $otp;
+        $customer->otp_expires_at = now()->addMinutes(10);
+        $customer->is_otp_verified = false;
+        $customer->save();
+
+        // Send OTP email
+        $mailerService = new MailerService;
+        $emailBody = view('email.otp', [
+            'otp' => $otp,
+        ])->render();
+        $emailResult = $mailerService->sendMail($customer->email, $emailBody);
+
+        if ($emailResult !== true) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send verification code. Please try again later.'
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification code sent to your email.'
+        ]);
+    }
 }
-
-

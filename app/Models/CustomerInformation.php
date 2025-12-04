@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerInformation extends Model
 {
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'address', 'password', 'status', 'remarks', 'hash_token', 'profile_path'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'address', 'password', 'status', 'remarks', 'hash_token', 'profile_path', 'otp_code', 'otp_expires_at', 'is_otp_verified'];
 
     protected $hidden = ['password', 'remember_token'];
 

@@ -28,6 +28,9 @@ Route::controller(CustomerAuthentication::class)->group(function () {
     Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
     Route::get('/password/reset/{email}', 'resetPassword')->name('password.update');
     Route::post('/password/change/new', 'changeNewPassword')->name('password.change.new');
+    Route::get('/otp/verify', 'otpVerifyPage')->name('otp.verify.page');
+    Route::post('/otp/verify', 'verifyOtp')->name('otp.verify');
+    Route::post('/otp/resend', 'resendOtp')->name('otp.resend');
 });
 
 Route::controller(LandinPageController::class)->group(function () {
@@ -50,6 +53,7 @@ Route::post('/order/place-direct', [CustomerOrder::class, 'placeDirectOrder'])->
 Route::get('/customer/orders', [CustomerOrder::class, 'ListOrders'])->name('customer.orders');
 Route::get('/customer/order/{id}', [CustomerOrder::class, 'viewOrder'])->name('customer.view.order');
 Route::post('updateOrderStatus/', [CustomerOrder::class, 'updateOrderStatus'])->name('admin.update.order.status');
+Route::get('/orders/fetch', [CustomerOrder::class, 'fetchOrders'])->name('orders.fetch');
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/dashboard', 'index')->name('admin.index')->middleware('auth:admin');
     Route::get('textile', 'texttile')->name('admin.texttile');
@@ -71,6 +75,19 @@ Route::controller(CustomerInformation::class)->group(function () {
     Route::get('/admin/customers', 'index')->name('admin.customers')->middleware('auth:admin');
 });
 
+// Carousel routes
+use App\Http\Controllers\Admin\CarouselController;
+Route::controller(CarouselController::class)->group(function () {
+    Route::get('/admin/carousel', 'index')->name('admin.carousel.index')->middleware('auth:admin');
+    Route::get('/admin/carousel/create', 'create')->name('admin.carousel.create')->middleware('auth:admin');
+    Route::post('/admin/carousel', 'store')->name('admin.carousel.store')->middleware('auth:admin');
+    Route::get('/admin/carousel/{carouselItem}/edit', 'edit')->name('admin.carousel.edit')->middleware('auth:admin');
+    Route::put('/admin/carousel/{carouselItem}', 'update')->name('admin.carousel.update')->middleware('auth:admin');
+    Route::delete('/admin/carousel/{carouselItem}', 'destroy')->name('admin.carousel.destroy')->middleware('auth:admin');
+    Route::post('/admin/carousel/{carouselItem}/toggle-active', 'toggleActive')->name('admin.carousel.toggle.active')->middleware('auth:admin');
+    Route::post('/admin/carousel/reorder', 'reorder')->name('admin.carousel.reorder')->middleware('auth:admin');
+});
+
 // Conversation message AJAX routes
 use App\Http\Controllers\ConversationMessageController;
 
@@ -84,4 +101,7 @@ Route::post('/conversation/get-or-create', [UserConversationWithAdminController:
         Route::get('/admin/login', 'showLoginForm')->name('admin.login');
         Route::post('/admin/login', 'login')->name('admin.authenticate');
         Route::get('/admin/logout', 'logout')->name('admin.logout');
+        Route::get('/admin/otp/verify', 'otpVerifyPage')->name('admin.otp.verify.page');
+        Route::post('/admin/otp/verify', 'verifyOtp')->name('admin.otp.verify');
+        Route::post('/admin/otp/resend', 'resendOtp')->name('admin.otp.resend');
     });

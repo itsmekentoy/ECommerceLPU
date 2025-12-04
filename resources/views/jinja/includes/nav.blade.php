@@ -57,6 +57,14 @@
                         <span>Chat</span>
                     </button>
                 </li>
+                <li class="mobile-menu-item">
+                    <button class="mobile-orders-btn" onclick="openOrdersModal(); toggleMobileMenu();">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 1H7v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-3V1h-2v2H9V1zm0 4h2v2h2V5h6v2h-2v2h2v2h-2v2h2v2h-2v2h2v2H9v-2H7v-2h2v-2H7v-2h2v-2H7V5h2V3zm7 2v14H7V7h9z"/>
+                        </svg>
+                        <span>Orders</span>
+                    </button>
+                </li>
                 @else
                 <li class="mobile-menu-item">
                     <a href="{{ route('login') }}" class="mobile-login-btn">
@@ -91,6 +99,13 @@
                         <path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
                     </svg>
                     Profile
+                </button>
+
+                <button type="button" class="login-btn" onclick="openOrdersModal()" style="margin-right:0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 1H7v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-3V1h-2v2H9V1zm0 4h2v2h2V5h6v2h-2v2h2v2h-2v2h2v2h-2v2h2v2H9v-2H7v-2h2v-2H7v-2h2v-2H7V5h2V3zm7 2v14H7V7h9z"/>
+                    </svg>
+                    Orders
                 </button>
 
                 @php
@@ -449,6 +464,99 @@ document.getElementById('chatModalForm').addEventListener('submit', window.sendC
 
                         
                     });
+                </script>
+
+                <!-- Orders Modal -->
+                <div id="ordersModal" style="position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
+                    <div style="background:#fff;border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:100%;max-width:700px;padding:2rem;position:relative;max-height:90vh;overflow-y:auto;">
+                        <button onclick="closeOrdersModal()" style="position:absolute;top:1rem;right:1rem;color:#6b7280;font-size:2rem;background:none;border:none;cursor:pointer;">&times;</button>
+                        <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;">My Orders</h2>
+                        <div id="ordersContent">
+                            <div style="text-align:center;padding:2rem;color:#6b7280;">Loading orders...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function openOrdersModal() {
+                        document.getElementById('ordersModal').style.display = 'flex';
+                        fetchOrders();
+                    }
+                    function closeOrdersModal() {
+                        document.getElementById('ordersModal').style.display = 'none';
+                    }
+                    function fetchOrders() {
+                        const ordersContent = document.getElementById('ordersContent');
+                        
+                        fetch('{{ route('orders.fetch') }}', {
+                            method: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.orders && data.orders.length > 0) {
+                                let html = '<div style="display:flex;flex-direction:column;gap:1rem;">';
+                                data.orders.forEach(order => {
+                                    let statusColor = '#6b7280';
+                                    let statusBg = '#f3f4f6';
+                                    
+                                    if (order.status === 'delivered') {
+                                        statusColor = '#10b981';
+                                        statusBg = '#ecfdf5';
+                                    } else if (order.status === 'shipped') {
+                                        statusColor = '#3b82f6';
+                                        statusBg = '#eff6ff';
+                                    } else if (order.status === 'processing') {
+                                        statusColor = '#8b5cf6';
+                                        statusBg = '#f5f3ff';
+                                    } else if (order.status === 'pending') {
+                                        statusColor = '#f59e0b';
+                                        statusBg = '#fffbeb';
+                                    } else if (order.status === 'cancelled') {
+                                        statusColor = '#ef4444';
+                                        statusBg = '#fef2f2';
+                                    } else if (order.status === 'refunded') {
+                                        statusColor = '#06b6d4';
+                                        statusBg = '#ecfdfd';
+                                    }
+                                    
+                                    html += `
+                                        <div style="border:1px solid #e5e7eb;border-radius:0.75rem;padding:1rem;background:#f9fafb;">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+                                                <div>
+                                                    <div style="font-weight:700;font-size:1rem;color:#1f2937;">Order #${order.order_code}</div>
+                                                    <div style="font-size:0.875rem;color:#6b7280;margin-top:0.25rem;">Ordered on ${new Date(order.created_at).toLocaleDateString()}</div>
+                                                </div>
+                                                <div style="background:${statusBg};color:${statusColor};padding:0.5rem 1rem;border-radius:0.5rem;font-weight:600;font-size:0.875rem;text-transform:capitalize;">
+                                                    ${order.status}
+                                                </div>
+                                            </div>
+                                            <div style="border-top:1px solid #e5e7eb;padding-top:0.75rem;margin-top:0.75rem;">
+                                                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+                                                    <span style="color:#6b7280;">Total Amount:</span>
+                                                    <span style="font-weight:700;color:#1f2937;">₱${parseFloat(order.total_amount).toFixed(2)}</span>
+                                                </div>
+                                                <div style="display:flex;justify-content:space-between;">
+                                                    <span style="color:#6b7280;">Delivery Address:</span>
+                                                    <span style="color:#1f2937;text-align:right;max-width:50%;">${order.delivery_address}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                                html += '</div>';
+                                ordersContent.innerHTML = html;
+                            } else {
+                                ordersContent.innerHTML = '<div style="text-align:center;padding:2rem;color:#6b7280;"><p>No orders found. Start shopping now!</p></div>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching orders:', error);
+                            ordersContent.innerHTML = '<div style="text-align:center;padding:2rem;color:#ef4444;">Error loading orders. Please try again.</div>';
+                        });
+                    }
                 </script>
                 
             @else
