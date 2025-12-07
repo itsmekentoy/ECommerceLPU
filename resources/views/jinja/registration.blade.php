@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=poppins:100i,300,400,500,600,700,800,900" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         *{
             font-family: 'Poppins';
@@ -86,15 +87,24 @@
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
                         Password
                     </label>
-                    <input 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
-                        id="password" 
-                        name="password"
-                        type="password" 
-                        placeholder="Enter your password"
-                        minlength="8"
-                        required
-                    >
+                    <div class="relative">
+                        <input 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-primary-dark transition duration-200" 
+                            id="password" 
+                            name="password"
+                            type="password" 
+                            placeholder="Enter your password"
+                            minlength="8"
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            id="togglePassword"
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+                        >
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
                     <p class="text-xs text-gray-500 mt-1">
                         Password must contain at least 8 characters, 1 uppercase letter, and 1 special character.
                     </p>
@@ -114,6 +124,24 @@
                 const btn = document.getElementById('signupBtn');
                 const passwordInput = document.getElementById('password');
                 const passwordError = document.getElementById('passwordError');
+                const togglePasswordBtn = document.getElementById('togglePassword');
+                const passwordIcon = document.getElementById('passwordIcon');
+                
+                // Toggle password visibility
+                togglePasswordBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle icon classes
+                    if (type === 'text') {
+                        passwordIcon.classList.remove('fa-eye');
+                        passwordIcon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordIcon.classList.remove('fa-eye-slash');
+                        passwordIcon.classList.add('fa-eye');
+                    }
+                });
                 
                 // Password validation function
                 function validatePassword(password) {

@@ -11,8 +11,9 @@
     </div>
 
     <!-- Form -->
-    <div class="bg-white rounded-lg shadow-sm p-8 max-w-2xl">
-        <form method="POST" action="{{ route('admin.carousel.store') }}" enctype="multipart/form-data" class="space-y-6">
+    <div class="flex justify-center">
+        <div class="bg-white rounded-lg shadow-sm p-8 max-w-2xl w-full">
+            <form method="POST" action="{{ route('admin.carousel.store') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <!-- Title -->
@@ -84,7 +85,7 @@
             </div>
 
             <!-- Storage Disk -->
-            <div>
+            <div style="display: none;s">
                 <label for="storage_disk" class="block text-sm font-semibold text-gray-900 mb-2">
                     Storage Location
                 </label>
